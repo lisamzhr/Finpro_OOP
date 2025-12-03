@@ -2,33 +2,43 @@ package com.finpro.frontend;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.utils.ScreenUtils;
+import com.finpro.frontend.states.GameStateManager;
+import com.finpro.frontend.states.MenuState;
 
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
     private SpriteBatch batch;
-    private Texture image;
+    private GameStateManager gsm;
 
     @Override
     public void create() {
         batch = new SpriteBatch();
-        image = new Texture("libgdx.png");
+        gsm = new GameStateManager();
+
+        //Push MenuState sebagai state awal (player = null, akan tampil button Start Game)
+        gsm.push(new MenuState(gsm, null));
+
+        //Simpan gsm di GameManager supaya state lain bisa akses (kalau pakai GameManager)
+        if (GameManager.getInstance() != null) {
+            GameManager.getInstance().setGsm(gsm);
+        }
     }
 
     @Override
     public void render() {
-        ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
-        batch.begin();
-        batch.draw(image, 140, 210);
-        batch.end();
+        float delta = Gdx.graphics.getDeltaTime();
+        gsm.update(delta);
+        gsm.render(batch);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+        // Handle resize if needed
     }
 
     @Override
     public void dispose() {
         batch.dispose();
-        image.dispose();
+        gsm.dispose();
     }
 }
