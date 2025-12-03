@@ -26,7 +26,7 @@ public class PlayerService {
     }
 
     //LOGIN
-    public Player login(String username, UUID playerId) {
+    public Player login(String username, String playerId) {
         return playerRepository.findById(playerId)
                 .filter(p -> p.getUsername().equals(username))
                 .orElse(null);

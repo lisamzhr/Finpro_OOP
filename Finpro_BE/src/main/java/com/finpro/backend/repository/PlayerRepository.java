@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface PlayerRepository extends JpaRepository<Player, UUID> {
+public interface PlayerRepository extends JpaRepository<Player, String> {
 
     Optional<Player> findByUsername(String username);
     boolean existsByUsername(String username);
