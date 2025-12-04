@@ -1,6 +1,7 @@
 package com.finpro.frontend.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -95,7 +96,7 @@ public class StartGameState implements GameState {
                 }
             } else if (screenMode.equals("register_success")) {
                 if (okButton.contains(x, y)) {
-                    Player p = new Player(createdPlayerId, tempUsername);
+                    Player p = new Player(createdPlayerId, tempUsername, 1);
                     gsm.set(new MenuState(gsm, p));
                 }
             } else if (!screenMode.equals("menu")) {
@@ -154,10 +155,11 @@ public class StartGameState implements GameState {
                 public void onSuccess(String response) {
                     String pid = extractValue(response, "playerId");
                     String uname = extractValue(response, "username");
+                    String lvl = extractValue(response, "level");
 
                     System.out.println("LOGIN SUCCESS!");
 
-                    Player p = new Player(pid, uname);
+                    Player p = new Player(pid, uname, Integer.valueOf(lvl));
                     Gdx.app.postRunnable(() -> gsm.set(new MenuState(gsm, p)));
                 }
 
@@ -422,12 +424,30 @@ public class StartGameState implements GameState {
 
     private String extractValue(String json, String key) {
         try {
-            String search = "\"" + key + "\":\"";
-            int start = json.indexOf(search) + search.length();
-            int end = json.indexOf("\"", start);
+            String search = "\"" + key + "\":";
+            int start = json.indexOf(search);
+            if (start == -1) return "";
+            start += search.length();
+            // Skip spasi
+            while (start < json.length() && (json.charAt(start) == ' ')) {
+                start++;
+            }
+            // Jika value diawali tanda kutip → STRING
+            if (json.charAt(start) == '\"') {
+                start++;
+                int end = json.indexOf("\"", start);
+                return json.substring(start, end);
+            }
+            // Jika bukan kutip → NUMBER
+            int end = start;
+            while (end < json.length() &&
+                (Character.isDigit(json.charAt(end)) || json.charAt(end) == '-')) {
+                end++;
+            }
             return json.substring(start, end);
         } catch (Exception e) {
             return "";
         }
     }
+
 }

@@ -75,6 +75,7 @@ public class PlayerController {
             Map<String, String> response = new HashMap<>();
             response.put("playerId", p.getPlayerId()); // Sudah String
             response.put("username", p.getUsername());
+            response.put("level", String.valueOf(p.getLevel()));
 
             System.out.println("Login success: " + response);
             return ResponseEntity.ok(response);

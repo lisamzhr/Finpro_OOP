@@ -4,6 +4,8 @@ import com.finpro.frontend.models.Player;
 import com.finpro.frontend.services.BackendService;
 import com.finpro.frontend.states.GameStateManager;
 
+import javax.swing.text.LabelView;
+
 /**
  * Simple singleton to keep current player and backend service.
  * States can call GameManager.getInstance() to read/write player or call backend.
@@ -51,10 +53,9 @@ public class GameManager {
         backendService.register(username, new BackendService.RequestCallback() {
             @Override
             public void onSuccess(String response) {
-                // response is JSON player object; simplest parse get id & username
-                // naive parse (better use Gson)
-                String id = parseIdFromJson(response);
-                Player p = new Player(id, username);
+                String id = extractValue(response, "playerId");
+                String lvl = extractValue(response, "level");
+                Player p = new Player(id, username, Integer.valueOf(lvl));
                 setCurrentPlayer(p);
                 callback.onSuccess(response);
             }
@@ -66,20 +67,32 @@ public class GameManager {
         });
     }
 
-    // very small helper parse for simple JSON like {"id":"...","username":"..."}
-    private String parseIdFromJson(String json) {
-        if (json == null) return null;
-        // naive extract between "id":" and next "
+    private String extractValue(String json, String key) {
         try {
-            int idx = json.indexOf("\"id\"");
-            if (idx == -1) idx = json.indexOf("\"playerId\"");
-            if (idx == -1) return null;
-            int colon = json.indexOf(":", idx);
-            int firstQuote = json.indexOf("\"", colon);
-            int secondQuote = json.indexOf("\"", firstQuote + 1);
-            return json.substring(firstQuote + 1, secondQuote);
+            String search = "\"" + key + "\":";
+            int start = json.indexOf(search);
+            if (start == -1) return "";
+            start += search.length();
+            // Skip spasi
+            while (start < json.length() && (json.charAt(start) == ' ')) {
+                start++;
+            }
+            // Jika value diawali tanda kutip → STRING
+            if (json.charAt(start) == '\"') {
+                start++;
+                int end = json.indexOf("\"", start);
+                return json.substring(start, end);
+            }
+            // Jika bukan kutip → NUMBER
+            int end = start;
+            while (end < json.length() &&
+                (Character.isDigit(json.charAt(end)) || json.charAt(end) == '-')) {
+                end++;
+            }
+            return json.substring(start, end);
         } catch (Exception e) {
-            return null;
+            return "";
         }
     }
+
 }

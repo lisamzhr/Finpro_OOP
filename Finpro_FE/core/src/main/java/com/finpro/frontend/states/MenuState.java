@@ -44,7 +44,6 @@ public class MenuState implements GameState {
     public void update(float delta) {
         // Kalau player udah ada (sudah login), skip button logic
         if (player != null) {
-            // Nanti tambahin logic game
             return;
         }
 
@@ -84,6 +83,8 @@ public class MenuState implements GameState {
             font.getData().setScale(1.5f);
             font.draw(batch, "Welcome: " + player.getUsername(), 100, 400);
             font.draw(batch, "ID: " + player.getId(), 100, 370);
+            font.draw(batch, "Level : " + player.getLevel(), 100, 350);
+            font.draw(batch, "Coin : " + player.getFashionCoin(), 100, 330);
             batch.end();
         }
     }
