@@ -98,11 +98,6 @@ public class StartGameState implements GameState {
                     Player p = new Player(createdPlayerId, tempUsername);
                     gsm.set(new MenuState(gsm, p));
                 }
-            } else if (!screenMode.equals("menu")) {
-                // Check if clicked outside input box to submit
-                if (!inputBox.contains(x, y) && y < inputBox.y) {
-                    handleInputSubmit();
-                }
             }
         }
     }
@@ -113,6 +108,7 @@ public class StartGameState implements GameState {
 
         if (screenMode.equals("register_input")) {
             loading = true;
+            screenMode = "loading";
             tempUsername = trimmed;
 
             backend.register(tempUsername, new BackendService.RequestCallback() {
@@ -135,7 +131,7 @@ public class StartGameState implements GameState {
                     Gdx.app.postRunnable(() -> {
                         loading = false;
                         inputText = "";
-                        screenMode = "menu";
+                        screenMode = "register_success";
                     });
                 }
             });
@@ -147,6 +143,7 @@ public class StartGameState implements GameState {
 
         } else if (screenMode.equals("login_playerid")) {
             loading = true;
+            screenMode = "loading";
             String playerId = trimmed;
 
             backend.login(tempUsername, playerId, new BackendService.RequestCallback() {
@@ -194,6 +191,9 @@ public class StartGameState implements GameState {
         } else if (screenMode.equals("login_playerid")) {
             renderLoginPlayerIdScreen();
         }
+        else if (screenMode.equals("loading")) {
+            renderLoadingScreen();
+        }
 
         shapeRenderer.end();
 
@@ -211,12 +211,8 @@ public class StartGameState implements GameState {
         } else if (screenMode.equals("login_playerid")) {
             renderLoginPlayerIdText(batch);
         }
-
-        if (loading) {
-            titleFont.setColor(PINK);
-            titleFont.draw(batch, "Loading...",
-                Gdx.graphics.getWidth()/2 - 100,
-                Gdx.graphics.getHeight()/2);
+        else if (screenMode.equals("loading")) {
+            renderLoadingText(batch);
         }
 
         batch.end();
@@ -280,64 +276,102 @@ public class StartGameState implements GameState {
 
     private void renderRegisterSuccessScreen() {
         shapeRenderer.setColor(INPUT_BG);
-        float boxWidth = 550;
-        float boxHeight = 320;
-        float boxX = Gdx.graphics.getWidth()/2 - boxWidth/2;
-        float boxY = Gdx.graphics.getHeight()/2 - boxHeight/2;
 
+        float boxWidth = 500;
+        float boxHeight = 380;
+        float boxX = Gdx.graphics.getWidth()/2f - boxWidth/2f;
+        float boxY = Gdx.graphics.getHeight()/2f - boxHeight/2f;
+
+        // Background box
         shapeRenderer.rect(boxX, boxY, boxWidth, boxHeight);
 
+        // Border
         shapeRenderer.setColor(PINK);
-        shapeRenderer.rectLine(boxX, boxY, boxX + boxWidth, boxY, 4);
+        shapeRenderer.rectLine(boxX, boxY, boxX + boxWidth, boxY, 6);
         shapeRenderer.rectLine(boxX, boxY + boxHeight, boxX + boxWidth, boxY + boxHeight, 4);
-        shapeRenderer.rectLine(boxX, boxY, boxX, boxY + boxHeight, 4);
+        shapeRenderer.rectLine(boxX, boxY, boxX, boxY + boxHeight, 6);
         shapeRenderer.rectLine(boxX + boxWidth, boxY, boxX + boxWidth, boxY + boxHeight, 4);
 
-        // Tombol NEXT
+        // Tombol NEXT – aman dari teks
+        float buttonWidth = 180;
+        float buttonHeight = 60;
+
+        float buttonX = Gdx.graphics.getWidth()/2f - buttonWidth/2f;
+        float buttonY = boxY + 30; // bawah sehingga tidak bertabrakan
+
         shapeRenderer.setColor(PINK);
-        shapeRenderer.rect(okButton.x, okButton.y, okButton.width, okButton.height);
+        shapeRenderer.rect(buttonX, buttonY, buttonWidth, buttonHeight);
+
+        okButton.set(buttonX, buttonY, buttonWidth, buttonHeight);
     }
 
     private void renderRegisterSuccessText(SpriteBatch batch) {
-        titleFont.setColor(PINK);
-        titleFont.draw(batch, "SUCCESS!",
-            Gdx.graphics.getWidth()/2 - 120,
-            Gdx.graphics.getHeight()/2 + 120);
+        float boxWidth = 500;
+        float boxHeight = 380;
+        float boxX = Gdx.graphics.getWidth()/2f - boxWidth/2f;
+        float boxY = Gdx.graphics.getHeight()/2f - boxHeight/2f;
 
+        // padding teks dari atas
+        float paddingTop = 40;
+        float yStart = boxY + boxHeight - paddingTop;
+
+        // SUCCESS title
+        titleFont.setColor(PINK);
+        titleFont.draw(batch,
+            "SUCCESS!",
+            boxX + 40,
+            yStart
+        );
+
+        // Subtitle
         font.setColor(DARK_PINK);
         font.getData().setScale(1.3f);
-        font.draw(batch, "Your account has been created!",
-            Gdx.graphics.getWidth()/2 - 170,
-            Gdx.graphics.getHeight()/2 + 50);
+        font.draw(batch,
+            "Your account has been created!",
+            boxX + 40,
+            yStart - 50
+        );
+
+        // Username line
         font.getData().setScale(1.5f);
-
         font.setColor(Color.BLACK);
-        font.draw(batch, "Username: " + tempUsername,
-            Gdx.graphics.getWidth()/2 - 150,
-            Gdx.graphics.getHeight()/2);
+        font.draw(batch,
+            "Username: " + tempUsername,
+            boxX + 40,
+            yStart - 110
+        );
 
+        // Player ID
         font.setColor(PINK);
         font.getData().setScale(2f);
-        font.draw(batch, "ID: " + createdPlayerId,
-            Gdx.graphics.getWidth()/2 - 100,
-            Gdx.graphics.getHeight()/2 - 50);
+        font.draw(batch,
+            "ID: " + createdPlayerId,
+            boxX + 40,
+            yStart - 170
+        );
         font.getData().setScale(1.5f);
 
+        // Warning text
         font.setColor(Color.RED);
         font.getData().setScale(1.1f);
-        font.draw(batch, "SAVE THIS ID! You need it to login.",
-            Gdx.graphics.getWidth()/2 - 190,
-            Gdx.graphics.getHeight()/2 - 100);
+        font.draw(batch,
+            "SAVE THIS ID! You need it to login.",
+            boxX + 40,
+            yStart - 220
+        );
         font.getData().setScale(1.5f);
 
         // Tombol NEXT
         font.setColor(Color.WHITE);
         font.getData().setScale(1.8f);
-        font.draw(batch, "NEXT",
-            okButton.x + 65,
-            okButton.y + 42);
+        font.draw(batch,
+            "NEXT",
+            okButton.x + (okButton.width / 2f) - 30,
+            okButton.y + 40
+        );
         font.getData().setScale(1.5f);
     }
+
 
     private void renderLoginUsernameScreen() {
         shapeRenderer.setColor(INPUT_BG);
@@ -430,4 +464,32 @@ public class StartGameState implements GameState {
             return "";
         }
     }
+    private void renderLoadingScreen() {
+        shapeRenderer.setColor(INPUT_BG);
+        float w = 600;
+        float h = 200;
+        float x = Gdx.graphics.getWidth()/2f - w/2f;
+        float y = Gdx.graphics.getHeight()/2f - h/2f;
+
+        shapeRenderer.rect(x, y, w, h);
+
+        shapeRenderer.setColor(PINK);
+        shapeRenderer.rectLine(x, y, x+w, y, 4);
+        shapeRenderer.rectLine(x, y+h, x+w, y+h, 4);
+        shapeRenderer.rectLine(x, y, x, y+h, 4);
+        shapeRenderer.rectLine(x+w, y, x+w, y+h, 4);
+    }
+
+    private void renderLoadingText(SpriteBatch batch) {
+        titleFont.setColor(PINK);
+        titleFont.draw(batch, "Loading...",
+            Gdx.graphics.getWidth()/2 - 120,
+            Gdx.graphics.getHeight()/2 + 20);
+
+        font.setColor(Color.GRAY);
+        font.draw(batch, "Please wait",
+            Gdx.graphics.getWidth()/2 - 60,
+            Gdx.graphics.getHeight()/2 - 20);
+    }
+
 }
