@@ -1,5 +1,8 @@
 img.png
 libgdx.png
+menu/DatingHouse.png
+menu/DressingHouse.png
+menu/background.png
 uiskin.atlas
 uiskin.json
 uiskin.png
