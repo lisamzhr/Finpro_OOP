@@ -483,8 +483,7 @@ public class StartGameState implements GameState {
             return "";
         }
     }
-<<<<<<< HEAD
-=======
+
     private void renderLoadingScreen() {
         shapeRenderer.setColor(INPUT_BG);
         float w = 600;
@@ -512,6 +511,5 @@ public class StartGameState implements GameState {
             Gdx.graphics.getWidth()/2 - 60,
             Gdx.graphics.getHeight()/2 - 20);
     }
->>>>>>> cef711c0842c6b71cc39311ecdbc5fe462a600e9
 
 }

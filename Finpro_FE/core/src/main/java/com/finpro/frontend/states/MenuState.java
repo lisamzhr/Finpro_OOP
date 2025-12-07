@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.finpro.frontend.models.DatingHouse;
+import com.finpro.frontend.models.DressingHouse;
 import com.finpro.frontend.models.Player;
 
 public class MenuState implements GameState {
@@ -19,6 +20,7 @@ public class MenuState implements GameState {
     private ShapeRenderer shapeRenderer;
     private Rectangle startGameButton;
     private DatingHouse datingHouse;
+    private DressingHouse dressingHouse;
     private Texture backgroundTexture;
 
     private static final Color PASTEL_BLUE = new Color(0.68f, 0.85f, 0.9f, 1f);
@@ -26,8 +28,8 @@ public class MenuState implements GameState {
 
     public MenuState(GameStateManager gsm, Player player) {
         this.gsm = gsm;
-        this.player = player; //yang bener ini
-        //this.player = new Player("LKJH", "lili", 1); //buat trial
+        //this.player = player; //yang bener ini
+        this.player = new Player("LKJH", "lili", 1); //buat trial
 
         font = new BitmapFont();
         font.getData().setScale(2f);
@@ -43,6 +45,7 @@ public class MenuState implements GameState {
 
         startGameButton = new Rectangle(centerX, centerY, buttonWidth, buttonHeight);
         datingHouse = new DatingHouse(-20, 260);
+        dressingHouse = new DressingHouse(840, 360);
         backgroundTexture = new Texture("menu/background.png");
     }
 
@@ -85,20 +88,21 @@ public class MenuState implements GameState {
                 startGameButton.y + startGameButton.height/2 + 15);
             batch.end();
         } else {
-            // Tampilan setelah login
+            //tampilan setelah login
             datingHouse.update();
 
             batch.begin();
 
-            // Info player di kiri
+            //info player
             font.getData().setScale(1.5f);
             font.draw(batch, "Welcome: " + player.getUsername(), 100, 400);
             font.draw(batch, "ID: " + player.getId(), 100, 370);
             font.draw(batch, "Level: " + player.getLevel(), 100, 340);
             font.draw(batch, "Coin: " + player.getFashionCoin(), 100, 310);
 
-            // Render DatingHouse
+            //render house
             datingHouse.render(batch);
+            dressingHouse.render(batch);
 
             batch.end();
         }
