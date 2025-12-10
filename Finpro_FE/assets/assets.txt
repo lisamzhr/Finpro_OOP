@@ -1,3 +1,9 @@
+dating/alex_full.png
+dating/alex_profile.png
+dating/background.png
+dating/brian_profile.png
+dating/chris_profile.png
+dating/datingGarden.png
 img.png
 libgdx.png
 menu/DatingHouse.png

@@ -483,6 +483,7 @@ public class StartGameState implements GameState {
             return "";
         }
     }
+
     private void renderLoadingScreen() {
         shapeRenderer.setColor(INPUT_BG);
         float w = 600;

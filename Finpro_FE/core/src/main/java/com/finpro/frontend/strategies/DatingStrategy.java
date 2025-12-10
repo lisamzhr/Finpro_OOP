@@ -1,8 +1,14 @@
 package com.finpro.frontend.strategies;
 
 public interface DatingStrategy {
-    public int datingConversationStage();
-    public int challengeStage();
-    public boolean isPass(int totalPoints);
-    public void finalStage(int totalPoints);
+    int datingConversationStage();
+    int challengeStage();
+    boolean isPass(int totalPoints);
+    String getFinalMessage(int totalPoints);
+
+    // New methods for LibGDX
+    String getStory();
+    String getConversationQuestion(int stage);
+    String[][] getConversationChoices(int stage); // [choice text, points]
+    String getChallengeDescription();
 }
