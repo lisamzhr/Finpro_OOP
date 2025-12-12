@@ -28,8 +28,8 @@ public class ResultState implements GameState {
         this.totalPoints = totalPoints;
         this.passed = strategy.isPass(totalPoints);
 
-        background = new Texture("dating/result_bg.png");
-        resultImage = new Texture(passed ? "dating/success.png" : "dating/failed.png");
+        background = new Texture("dating/background.png");
+        resultImage = new Texture(passed ? "dating/background.png" : "dating/background.png");
         font = new BitmapFont();
 
         // Get final message from strategy

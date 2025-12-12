@@ -22,7 +22,7 @@ public class StoryState implements GameState {
         this.strategy = strategy;
         this.boyId = boyId;
 
-        background = new Texture("dating/datingGarden.png");
+        background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Conv.png");
         boyImage = new Texture("dating/" + boyId.toLowerCase() + "_full.png");
         font = new BitmapFont();
 
@@ -53,11 +53,14 @@ public class StoryState implements GameState {
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Draw boy image
-        batch.draw(boyImage, 50, 100, 400, 600);
+        int boyPos = 300;
+        if(boyId == "ALEX") {
+            boyPos = 1100;}
+        batch.draw(boyImage, boyPos, 0, boyImage.getWidth()/2, boyImage.getHeight()/2);
 
         // Draw story text (wrap text)
-        font.getData().setScale(1.5f);
-        drawWrappedText(batch, font, storyText, 500, 600, 700);
+        font.getData().setScale(3f);
+        drawWrappedText(batch, font, storyText, 300, 900, 700);
 
         // Draw continue button
         continueButton.render(batch, font);
@@ -67,6 +70,8 @@ public class StoryState implements GameState {
 
     private void drawWrappedText(SpriteBatch batch, BitmapFont font,
                                  String text, float x, float y, float maxWidth) {
+
+        font.getData().setScale(3f);
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         float currentY = y;
@@ -78,7 +83,7 @@ public class StoryState implements GameState {
 
             if (layout.width > maxWidth) {
                 font.draw(batch, line.toString(), x, currentY);
-                currentY -= 30;
+                currentY -= 40;
                 line = new StringBuilder(word + " ");
             } else {
                 line.append(word).append(" ");

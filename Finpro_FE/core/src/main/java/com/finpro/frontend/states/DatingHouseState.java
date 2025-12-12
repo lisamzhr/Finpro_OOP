@@ -24,17 +24,17 @@ public class DatingHouseState implements GameState {
     public DatingHouseState(GameStateManager gsm) {
         this.gsm = gsm;
 
-        background = new Texture("dating/background.png");
+        background = new Texture("dating/BackgroundDatingState.png");
         font = new BitmapFont();
 
         // Create boy buttons (posisi sesuaikan dengan layout kamu)
         float centerX = Gdx.graphics.getWidth() / 2f;
         alexButton = new BoyButton("Alex", "dating/alex_profile.png",
-            centerX - 1300, 300, "ALEX");
+            centerX - 700, 200, "ALEX");
         brianButton = new BoyButton("Brian", "dating/brian_profile.png",
-            centerX - 700, 300, "BRIAN");
+            centerX - 200, 200, "BRIAN");
         chrisButton = new BoyButton("Chris", "dating/chris_profile.png",
-            centerX, 300, "CHRIS");
+            centerX + 300, 200, "CHRIS");
     }
 
     @Override
@@ -64,8 +64,6 @@ public class DatingHouseState implements GameState {
 
         // Draw title
         font.getData().setScale(2f);
-        font.draw(batch, "PILIH COWOK UNTUK DATE",
-            Gdx.graphics.getWidth() / 2f - 200, Gdx.graphics.getHeight() - 50);
 
         // Draw buttons
         alexButton.render(batch, font);

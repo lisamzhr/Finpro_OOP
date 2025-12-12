@@ -15,7 +15,7 @@ public class BoyButton {
     private boolean isHovered;
     private boolean wasClicked;
 
-    public BoyButton(String name, String texturePath, float x, float y, String boyId) {
+    public BoyButton(String name, String texturePath, float x, float y, float width, float height, String boyId) {
         this.name = name;
         this.boyId = boyId;
 
@@ -26,11 +26,14 @@ public class BoyButton {
             profileImg = new Texture("default_profile.png");
         }
 
-        float width = profileImg.getWidth();
-        float height = profileImg.getHeight();
         bounds = new Rectangle(x, y, width, height);
         isHovered = false;
         wasClicked = false;
+    }
+
+    // Constructor overload untuk backward compatibility
+    public BoyButton(String name, String texturePath, float x, float y, String boyId) {
+        this(name, texturePath, x, y, 400, 700, boyId);
     }
 
     public void update() {
@@ -53,21 +56,23 @@ public class BoyButton {
         float offsetX = (scale - 1) * bounds.width / 2;
         float offsetY = (scale - 1) * bounds.height / 2;
 
-        // Draw profile image with hover effect
         batch.draw(profileImg,
             bounds.x - offsetX, bounds.y - offsetY,
             bounds.width * scale, bounds.height * scale);
-
-        // Draw name below
-        font.getData().setScale(1.2f);
-        font.draw(batch, name,
-            bounds.x + bounds.width / 2 - 30, bounds.y - 20);
     }
 
     public boolean isClicked() {
         boolean clicked = wasClicked;
         wasClicked = false;
         return clicked;
+    }
+
+    public String getBoyId() {
+        return boyId;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void dispose() {

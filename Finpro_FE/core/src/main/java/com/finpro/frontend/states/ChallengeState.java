@@ -26,7 +26,7 @@ public class ChallengeState implements GameState {
         this.boyId = boyId;
         this.totalPoints = totalPoints;
 
-        background = new Texture("dating/challenge_bg.png");
+        background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Chall.png");
         font = new BitmapFont();
 
         challengeDescription = strategy.getChallengeDescription();
