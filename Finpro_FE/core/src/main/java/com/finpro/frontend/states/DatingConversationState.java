@@ -6,7 +6,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.finpro.frontend.models.ChoiceButton;
+import com.finpro.frontend.models.Button;
+import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.strategies.DatingStrategy;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,19 +19,22 @@ public class DatingConversationState implements GameState {
     private BitmapFont font;
     private DatingStrategy strategy;
     private String boyId;
+    private ButtonManager buttonManager;
 
     private int currentStage;
     private int totalPoints;
     private int maxConversationStages;
 
     private String currentQuestion;
-    private List<ChoiceButton> choiceButtons;
+    private List<Button> choiceButtons;
     private ShapeRenderer shapeRenderer;
 
-    public DatingConversationState(GameStateManager gsm, DatingStrategy strategy, String boyId) {
+    public DatingConversationState(GameStateManager gsm, DatingStrategy strategy,
+                                   String boyId, ButtonManager buttonManager) {
         this.gsm = gsm;
         this.strategy = strategy;
         this.boyId = boyId;
+        this.buttonManager = buttonManager;
         this.currentStage = 0;
         this.totalPoints = 0;
         this.maxConversationStages = strategy.datingConversationStage();
@@ -45,6 +49,10 @@ public class DatingConversationState implements GameState {
     }
 
     private void loadConversationStage() {
+        // Release previous buttons back to pool
+        for (Button btn : choiceButtons) {
+            buttonManager.releaseButton(btn);
+        }
         choiceButtons.clear();
 
         // Get question and choices from strategy
@@ -58,11 +66,13 @@ public class DatingConversationState implements GameState {
             String text = choices[i][0];
             int points = Integer.parseInt(choices[i][1]);
 
-            ChoiceButton btn = new ChoiceButton(
+            // Create choice button using ButtonManager
+            Button btn = buttonManager.createChoiceButton(
                 text,
                 Gdx.graphics.getWidth() / 2f - 300,
                 startY - (i * spacing),
-                600, 60,
+                600,
+                60,
                 points
             );
             choiceButtons.add(btn);
@@ -72,10 +82,10 @@ public class DatingConversationState implements GameState {
     @Override
     public void update(float delta) {
         boolean buttonClicked = false;
-        ChoiceButton clickedButton = null;
+        Button clickedButton = null;
 
         // First pass: detect clicks without modifying the list
-        for (ChoiceButton btn : choiceButtons) {
+        for (Button btn : choiceButtons) {
             btn.update();
 
             if (btn.isClicked()) {
@@ -109,8 +119,9 @@ public class DatingConversationState implements GameState {
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         int boyPos = 300;
-        if(boyId == "ALEX") {
-            boyPos = 1100;}
+        if (boyId.equals("ALEX")) {
+            boyPos = 1100;
+        }
         batch.draw(boyImage, boyPos, 0, boyImage.getWidth()/2, boyImage.getHeight()/2);
 
         batch.end();
@@ -158,7 +169,7 @@ public class DatingConversationState implements GameState {
             Gdx.graphics.getWidth() - 160, Gdx.graphics.getHeight() - 20);
 
         // Draw choice buttons
-        for (ChoiceButton btn : choiceButtons) {
+        for (Button btn : choiceButtons) {
             btn.render(batch, font);
         }
 
@@ -171,8 +182,11 @@ public class DatingConversationState implements GameState {
         boyImage.dispose();
         font.dispose();
         shapeRenderer.dispose();
-        for (ChoiceButton btn : choiceButtons) {
-            btn.dispose();
+
+        // Release all buttons back to pool
+        for (Button btn : choiceButtons) {
+            buttonManager.releaseButton(btn);
         }
+        choiceButtons.clear();
     }
 }

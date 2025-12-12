@@ -1,15 +1,18 @@
 package com.finpro.frontend.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.finpro.frontend.models.Player;
+import com.finpro.frontend.models.Button;
+import com.finpro.frontend.ButtonManager;
+import com.finpro.frontend.factory.ButtonFactory;
 import com.finpro.frontend.services.BackendService;
-import com.badlogic.gdx.graphics.GL20;
 
 public class StartGameState implements GameState {
 
@@ -18,11 +21,15 @@ public class StartGameState implements GameState {
     private ShapeRenderer shapeRenderer;
     private BitmapFont font;
     private BitmapFont titleFont;
+    private ButtonManager buttonManager;
 
-    private Rectangle registerButton;
-    private Rectangle loginButton;
-    private Rectangle okButton;
+    private Button registerButton;
+    private Button loginButton;
+    private Button okButton;
     private Rectangle inputBox;
+
+    private Texture buttonTexture;
+    private Texture buttonHoverTexture;
 
     private boolean loading = false;
     private String screenMode = "menu"; // "menu", "register_input", "register_success", "login_username", "login_playerid"
@@ -46,14 +53,50 @@ public class StartGameState implements GameState {
         titleFont = new BitmapFont();
         titleFont.getData().setScale(2.5f);
 
+        // Initialize ButtonManager
+        ButtonFactory buttonFactory = new ButtonFactory(font);
+        buttonManager = new ButtonManager(buttonFactory);
+
+        // Load button textures (use pink colored textures or create simple ones)
+        buttonTexture = new Texture("button_normal.png");
+        buttonHoverTexture = new Texture("button_hover.png");
+
         float buttonWidth = 200;
         float buttonHeight = 60;
         float centerX = Gdx.graphics.getWidth() / 2f - buttonWidth / 2f;
         float centerY = Gdx.graphics.getHeight() / 2f;
 
-        registerButton = new Rectangle(centerX, centerY + 50, buttonWidth, buttonHeight);
-        loginButton = new Rectangle(centerX, centerY - 50, buttonWidth, buttonHeight);
-        okButton = new Rectangle(centerX, centerY - 150, buttonWidth, buttonHeight);
+        // Create buttons using ButtonManager
+        registerButton = buttonManager.createButton(
+            "REGISTER",
+            centerX,
+            centerY + 50,
+            buttonWidth,
+            buttonHeight,
+            buttonTexture,
+            buttonHoverTexture
+        );
+
+        loginButton = buttonManager.createButton(
+            "LOGIN",
+            centerX,
+            centerY - 50,
+            buttonWidth,
+            buttonHeight,
+            buttonTexture,
+            buttonHoverTexture
+        );
+
+        okButton = buttonManager.createButton(
+            "NEXT",
+            centerX,
+            centerY - 150,
+            180,
+            60,
+            buttonTexture,
+            buttonHoverTexture
+        );
+
         inputBox = new Rectangle(centerX - 100, centerY, 400, 50);
 
         Gdx.input.setInputProcessor(new com.badlogic.gdx.InputAdapter() {
@@ -81,24 +124,24 @@ public class StartGameState implements GameState {
     public void update(float delta) {
         if (loading) return;
 
-        if (Gdx.input.justTouched()) {
-            float x = Gdx.input.getX();
-            float y = Gdx.graphics.getHeight() - Gdx.input.getY();
+        if (screenMode.equals("menu")) {
+            registerButton.update();
+            loginButton.update();
 
-            if (screenMode.equals("menu")) {
-                if (registerButton.contains(x, y)) {
-                    screenMode = "register_input";
-                    inputText = "";
-                } else if (loginButton.contains(x, y)) {
-                    screenMode = "login_username";
-                    inputText = "";
-                    tempUsername = "";
-                }
-            } else if (screenMode.equals("register_success")) {
-                if (okButton.contains(x, y)) {
-                    Player p = new Player(createdPlayerId, tempUsername, 1);
-                    gsm.set(new MenuState(gsm, p));
-                }
+            if (registerButton.isClicked()) {
+                screenMode = "register_input";
+                inputText = "";
+            } else if (loginButton.isClicked()) {
+                screenMode = "login_username";
+                inputText = "";
+                tempUsername = "";
+            }
+        } else if (screenMode.equals("register_success")) {
+            okButton.update();
+
+            if (okButton.isClicked()) {
+                Player p = new Player(createdPlayerId, tempUsername, 1);
+                gsm.set(new MenuState(gsm, p));
             }
         }
     }
@@ -192,28 +235,29 @@ public class StartGameState implements GameState {
             renderLoginUsernameScreen();
         } else if (screenMode.equals("login_playerid")) {
             renderLoginPlayerIdScreen();
-        }
-        else if (screenMode.equals("loading")) {
+        } else if (screenMode.equals("loading")) {
             renderLoadingScreen();
         }
 
         shapeRenderer.end();
 
-        // Draw text
+        // Draw text and buttons
         batch.begin();
 
         if (screenMode.equals("menu")) {
             renderMenuText(batch);
+            registerButton.render(batch, font);
+            loginButton.render(batch, font);
         } else if (screenMode.equals("register_input")) {
             renderRegisterInputText(batch);
         } else if (screenMode.equals("register_success")) {
             renderRegisterSuccessText(batch);
+            okButton.render(batch, font);
         } else if (screenMode.equals("login_username")) {
             renderLoginUsernameText(batch);
         } else if (screenMode.equals("login_playerid")) {
             renderLoginPlayerIdText(batch);
-        }
-        else if (screenMode.equals("loading")) {
+        } else if (screenMode.equals("loading")) {
             renderLoadingText(batch);
         }
 
@@ -221,9 +265,7 @@ public class StartGameState implements GameState {
     }
 
     private void renderMenuScreen() {
-        shapeRenderer.setColor(PINK);
-        shapeRenderer.rect(registerButton.x, registerButton.y, registerButton.width, registerButton.height);
-        shapeRenderer.rect(loginButton.x, loginButton.y, loginButton.width, loginButton.height);
+        // Buttons are now rendered by Button class, no need to draw rectangles here
     }
 
     private void renderMenuText(SpriteBatch batch) {
@@ -231,14 +273,6 @@ public class StartGameState implements GameState {
         titleFont.draw(batch, "WELCOME!",
             Gdx.graphics.getWidth()/2 - 120,
             Gdx.graphics.getHeight() - 100);
-
-        font.setColor(Color.WHITE);
-        font.draw(batch, "REGISTER",
-            registerButton.x + 50,
-            registerButton.y + 40);
-        font.draw(batch, "LOGIN",
-            loginButton.x + 70,
-            loginButton.y + 40);
     }
 
     private void renderRegisterInputScreen() {
@@ -293,18 +327,6 @@ public class StartGameState implements GameState {
         shapeRenderer.rectLine(boxX, boxY + boxHeight, boxX + boxWidth, boxY + boxHeight, 4);
         shapeRenderer.rectLine(boxX, boxY, boxX, boxY + boxHeight, 6);
         shapeRenderer.rectLine(boxX + boxWidth, boxY, boxX + boxWidth, boxY + boxHeight, 4);
-
-        // Tombol NEXT – aman dari teks
-        float buttonWidth = 180;
-        float buttonHeight = 60;
-
-        float buttonX = Gdx.graphics.getWidth()/2f - buttonWidth/2f;
-        float buttonY = boxY + 30; // bawah sehingga tidak bertabrakan
-
-        shapeRenderer.setColor(PINK);
-        shapeRenderer.rect(buttonX, buttonY, buttonWidth, buttonHeight);
-
-        okButton.set(buttonX, buttonY, buttonWidth, buttonHeight);
     }
 
     private void renderRegisterSuccessText(SpriteBatch batch) {
@@ -362,18 +384,7 @@ public class StartGameState implements GameState {
             yStart - 220
         );
         font.getData().setScale(1.5f);
-
-        // Tombol NEXT
-        font.setColor(Color.WHITE);
-        font.getData().setScale(1.8f);
-        font.draw(batch,
-            "NEXT",
-            okButton.x + (okButton.width / 2f) - 30,
-            okButton.y + 40
-        );
-        font.getData().setScale(1.5f);
     }
-
 
     private void renderLoginUsernameScreen() {
         shapeRenderer.setColor(INPUT_BG);
@@ -454,6 +465,29 @@ public class StartGameState implements GameState {
         shapeRenderer.dispose();
         font.dispose();
         titleFont.dispose();
+
+        if (buttonTexture != null) {
+            buttonTexture.dispose();
+        }
+        if (buttonHoverTexture != null) {
+            buttonHoverTexture.dispose();
+        }
+
+        // Release buttons back to pool
+        if (registerButton != null) {
+            buttonManager.releaseButton(registerButton);
+        }
+        if (loginButton != null) {
+            buttonManager.releaseButton(loginButton);
+        }
+        if (okButton != null) {
+            buttonManager.releaseButton(okButton);
+        }
+
+        // Dispose ButtonManager
+        if (buttonManager != null) {
+            buttonManager.dispose();
+        }
     }
 
     private String extractValue(String json, String key) {
@@ -511,5 +545,4 @@ public class StartGameState implements GameState {
             Gdx.graphics.getWidth()/2 - 60,
             Gdx.graphics.getHeight()/2 - 20);
     }
-
 }
