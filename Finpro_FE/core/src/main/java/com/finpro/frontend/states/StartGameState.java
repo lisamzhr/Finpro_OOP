@@ -42,7 +42,7 @@ public class StartGameState implements GameState {
     private static final Color DARK_PINK = new Color(0.9f, 0.6f, 0.65f, 1f);
     private static final Color INPUT_BG = new Color(1f, 1f, 1f, 1f);
 
-    public StartGameState(GameStateManager gsm) {
+    public StartGameState(GameStateManager gsm, ButtonManager buttonManager) {
         this.gsm = gsm;
         backend = new BackendService();
         shapeRenderer = new ShapeRenderer();
@@ -55,7 +55,7 @@ public class StartGameState implements GameState {
 
         // Initialize ButtonManager
         ButtonFactory buttonFactory = new ButtonFactory(font);
-        buttonManager = new ButtonManager(buttonFactory);
+        this.buttonManager = buttonManager;
 
         // Load button textures (use pink colored textures or create simple ones)
         buttonTexture = new Texture("button_normal.png");
