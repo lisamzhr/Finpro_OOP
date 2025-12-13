@@ -4,7 +4,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.finpro.frontend.models.SimpleButton;
+import com.finpro.frontend.models.Button;
+import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.strategies.DatingStrategy;
 
 public class ResultState implements GameState {
@@ -17,27 +18,42 @@ public class ResultState implements GameState {
     private int totalPoints;
     private boolean passed;
     private String resultMessage;
+    private ButtonManager buttonManager;
 
-    private SimpleButton backButton;
+    private Button backButton;
+    private Texture buttonTexture;
+    private Texture buttonHoverTexture;
 
     public ResultState(GameStateManager gsm, DatingStrategy strategy,
-                       String boyId, int totalPoints) {
-        this.gsm =gsm;
+                       String boyId, int totalPoints, ButtonManager buttonManager) {
+        this.gsm = gsm;
         this.strategy = strategy;
         this.boyId = boyId;
         this.totalPoints = totalPoints;
+        this.buttonManager = buttonManager;
         this.passed = strategy.isPass(totalPoints);
 
-        background = new Texture("dating/background.png");
+        background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Chall.png");
         resultImage = new Texture(passed ? "dating/background.png" : "dating/background.png");
         font = new BitmapFont();
 
         // Get final message from strategy
         resultMessage = strategy.getFinalMessage(totalPoints);
 
-        backButton = new SimpleButton("Back to House",
+        // Load button textures
+        buttonTexture = new Texture("button_normal.png");
+        buttonHoverTexture = new Texture("button_hover.png");
+
+        // Create back button using ButtonManager
+        backButton = buttonManager.createButton(
+            "Back to House",
             Gdx.graphics.getWidth() / 2f - 100,
-            100, 200, 60);
+            100,
+            200,
+            60,
+            buttonTexture,
+            buttonHoverTexture
+        );
     }
 
     @Override
@@ -81,6 +97,7 @@ public class ResultState implements GameState {
         font.draw(batch, resultMessage,
             Gdx.graphics.getWidth() / 2f - 300, 300);
 
+        // Draw back button
         backButton.render(batch, font);
 
         batch.end();
@@ -91,6 +108,19 @@ public class ResultState implements GameState {
         background.dispose();
         resultImage.dispose();
         font.dispose();
-        backButton.dispose();
+
+        // Dispose textures
+        if (buttonTexture != null) {
+            buttonTexture.dispose();
+        }
+        if (buttonHoverTexture != null) {
+            buttonHoverTexture.dispose();
+        }
+
+        // Release button back to pool
+        if (backButton != null) {
+            buttonManager.releaseButton(backButton);
+            backButton = null;
+        }
     }
 }

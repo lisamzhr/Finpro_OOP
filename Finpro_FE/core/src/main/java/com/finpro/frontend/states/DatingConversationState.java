@@ -45,11 +45,18 @@ public class DatingConversationState implements GameState {
         shapeRenderer = new ShapeRenderer();
 
         choiceButtons = new ArrayList<>();
+
+        System.out.println("=== DatingConversationState Created ===");
+        System.out.println("Active buttons before load: " + buttonManager.getActiveCount());
+
         loadConversationStage();
+
+        System.out.println("Active buttons after load: " + buttonManager.getActiveCount());
     }
 
     private void loadConversationStage() {
         // Release previous buttons back to pool
+        System.out.println("Loading stage " + currentStage + " - Releasing " + choiceButtons.size() + " old buttons");
         for (Button btn : choiceButtons) {
             buttonManager.releaseButton(btn);
         }
@@ -75,8 +82,15 @@ public class DatingConversationState implements GameState {
                 60,
                 points
             );
+
+            if (btn == null) {
+                System.err.println("ERROR: Failed to create choice button at stage " + currentStage);
+            }
+
             choiceButtons.add(btn);
         }
+
+        System.out.println("Created " + choiceButtons.size() + " buttons for stage " + currentStage);
     }
 
     @Override
@@ -105,8 +119,19 @@ public class DatingConversationState implements GameState {
             if (currentStage < maxConversationStages) {
                 loadConversationStage();
             } else {
+                // CRITICAL FIX: Release buttons BEFORE pushing to next state
+                System.out.println("Conversation finished! Releasing buttons before challenge...");
+                System.out.println("Active buttons before cleanup: " + buttonManager.getActiveCount());
+
+                for (Button btn : choiceButtons) {
+                    buttonManager.releaseButton(btn);
+                }
+                choiceButtons.clear();
+
+                System.out.println("Active buttons after cleanup: " + buttonManager.getActiveCount());
+
                 // Move to challenge state
-                gsm.push(new ChallengeState(gsm, strategy, boyId, totalPoints));
+                gsm.push(new ChallengeState(gsm, strategy, boyId, totalPoints, buttonManager));
             }
         }
     }
@@ -178,6 +203,9 @@ public class DatingConversationState implements GameState {
 
     @Override
     public void dispose() {
+        System.out.println("=== DatingConversationState Disposing ===");
+        System.out.println("Active buttons before dispose: " + buttonManager.getActiveCount());
+
         background.dispose();
         boyImage.dispose();
         font.dispose();
@@ -188,5 +216,7 @@ public class DatingConversationState implements GameState {
             buttonManager.releaseButton(btn);
         }
         choiceButtons.clear();
+
+        System.out.println("Active buttons after dispose: " + buttonManager.getActiveCount());
     }
 }

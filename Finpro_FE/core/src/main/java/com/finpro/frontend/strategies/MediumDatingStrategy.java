@@ -70,4 +70,9 @@ public class MediumDatingStrategy implements DatingStrategy {
         return "Brian challenges you to solve a coding puzzle together! " +
             "Can you debug this algorithm?";
     }
+    @Override
+    public ChallengeGame createChallenge() {
+        // Return a new instance of the challenge game for this character
+        return new MediumChallenge();
+    }
 }

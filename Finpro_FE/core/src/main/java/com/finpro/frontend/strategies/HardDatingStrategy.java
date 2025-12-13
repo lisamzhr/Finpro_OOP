@@ -65,4 +65,9 @@ public class HardDatingStrategy implements DatingStrategy{
         return "Chris wants to paint a portrait of you! " +
             "Will you be his muse for the evening?";
     }
+    @Override
+    public ChallengeGame createChallenge() {
+        // Return a new instance of the challenge game for this character
+        return new MediumChallenge();
+    }
 }

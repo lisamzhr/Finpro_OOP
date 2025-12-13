@@ -71,4 +71,9 @@ public class EasyDatingStrategy implements DatingStrategy {
         return "Alex challenges you to a 3-point shootout! " +
             "He wants to see if you can keep up with him!";
     }
+    @Override
+    public ChallengeGame createChallenge() {
+        // Return a new instance of the challenge game for this character
+        return new MediumChallenge();
+    }
 }

@@ -5,9 +5,13 @@ dating/alex_Background_Conv.png
 dating/alex_full.png
 dating/alex_profile.png
 dating/background.png
+dating/brian_Background_Chall.png
 dating/brian_Background_Conv.png
+dating/brian_Background_Result.png
 dating/brian_full.png
 dating/brian_profile.png
+dating/brian_purple_flower.png
+dating/brian_red_flower.png
 dating/chris_Background_Conv.png
 dating/chris_full.png
 dating/chris_profile.png

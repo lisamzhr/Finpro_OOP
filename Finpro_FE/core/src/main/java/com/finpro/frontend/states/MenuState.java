@@ -25,10 +25,10 @@ public class MenuState implements GameState {
     private Texture buttonTexture;
     private Texture buttonHoverTexture;
 
-    public MenuState(GameStateManager gsm, Player player) {
+    public MenuState(GameStateManager gsm, Player player, ButtonManager buttonManager) {
         this.gsm = gsm;
-        this.player = player; //yang bener ini
-        //this.player = new Player("LKJH", "lili", 1); //buat trial
+        //this.player = player; //yang bener ini
+        this.player = new Player("LKJH", "lili", 1); //buat trial
 
         font = new BitmapFont();
         font.getData().setScale(2f);
@@ -38,7 +38,7 @@ public class MenuState implements GameState {
 
         // Initialize ButtonManager with font
         ButtonFactory buttonFactory = new ButtonFactory(font);
-        buttonManager = new ButtonManager(buttonFactory);
+        buttonManager = buttonManager;
 
         // Load button textures
         buttonTexture = new Texture("button_normal.png");
@@ -140,9 +140,5 @@ public class MenuState implements GameState {
             startGameButton = null;
         }
 
-        // Dispose ButtonManager
-        if (buttonManager != null) {
-            buttonManager.dispose();
-        }
     }
 }
