@@ -27,8 +27,8 @@ public class MenuState implements GameState {
 
     public MenuState(GameStateManager gsm, Player player, ButtonManager buttonManager) {
         this.gsm = gsm;
-        //this.player = player; //yang bener ini
-        this.player = new Player("LKJH", "lili", 1); //buat trial
+        this.player = player;
+        //this.player = new Player("LKJH", "lili", 1); // Hapus ini, pake parameter
 
         font = new BitmapFont();
         font.getData().setScale(2f);
@@ -67,6 +67,7 @@ public class MenuState implements GameState {
 
     @Override
     public void update(float delta) {
+<<<<<<< HEAD
         // If player exists (already logged in), update houses
         if (player != null) {
             datingHouse.update();
@@ -79,6 +80,32 @@ public class MenuState implements GameState {
 
         if (startGameButton.isClicked()) {
             gsm.set(new StartGameState(gsm));
+=======
+        if (player != null) {
+            datingHouse.update();
+            dressingHouse.update();
+
+            // Check house clicks
+            if (Gdx.input.justTouched()) {
+                if (dressingHouse.isHovered()) {
+                    gsm.setState(new DressingHouseState(gsm, player));
+                    return;
+                } else if (datingHouse.isHovered()) {
+                    // gsm.setState(new DatingHouseState(gsm, player));
+                    System.out.println("Dating House clicked!");
+                    return;
+                }
+            }
+        } else {
+            if (Gdx.input.justTouched()) {
+                float x = Gdx.input.getX();
+                float y = Gdx.graphics.getHeight() - Gdx.input.getY();
+
+                if (startGameButton.contains(x, y)) {
+                    gsm.setState(new StartGameState(gsm));
+                }
+            }
+>>>>>>> 1a485d1087f406996fd723bf49b6a6aac4a6ccf0
         }
     }
 
@@ -87,14 +114,25 @@ public class MenuState implements GameState {
         // Draw background
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+<<<<<<< HEAD
+=======
+        batch.end();
+>>>>>>> 1a485d1087f406996fd723bf49b6a6aac4a6ccf0
 
         if (player == null) {
             // Initial view: "Start Game" button
             startGameButton.render(batch, font);
         } else {
+<<<<<<< HEAD
             // View after login
 
             // Player info
+=======
+            // Tampilan setelah login
+            batch.begin();
+
+            // Info player
+>>>>>>> 1a485d1087f406996fd723bf49b6a6aac4a6ccf0
             font.getData().setScale(1.5f);
             font.draw(batch, "Welcome: " + player.getUsername(), 100, 400);
             font.draw(batch, "ID: " + player.getId(), 100, 370);
@@ -112,6 +150,7 @@ public class MenuState implements GameState {
 
     @Override
     public void dispose() {
+<<<<<<< HEAD
         backgroundTexture.dispose();
 
         if (font != null) {
@@ -140,5 +179,12 @@ public class MenuState implements GameState {
             startGameButton = null;
         }
 
+=======
+        if (backgroundTexture != null) backgroundTexture.dispose();
+        if (font != null) font.dispose();
+        if (shapeRenderer != null) shapeRenderer.dispose();
+        if (datingHouse != null) datingHouse.dispose();
+        if (dressingHouse != null) dressingHouse.dispose();
+>>>>>>> 1a485d1087f406996fd723bf49b6a6aac4a6ccf0
     }
 }
