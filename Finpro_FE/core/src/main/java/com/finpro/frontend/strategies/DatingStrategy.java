@@ -11,4 +11,6 @@ public interface DatingStrategy {
     String getConversationQuestion(int stage);
     String[][] getConversationChoices(int stage); // [choice text, points]
     String getChallengeDescription();
+    // Challenge game creation
+    ChallengeGame createChallenge();
 }

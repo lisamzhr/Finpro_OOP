@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.models.DressingHouse;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.models.SimpleButton;
@@ -16,14 +17,16 @@ public class DressingHouseState implements GameState {
     private GameStateManager gsm;
     private DressingHouse dressingHouse;
     private Player player;
+    private ButtonManager buttonManager;
 
     private Texture background;
     private SimpleButton saveBtn;
     private BitmapFont font;
 
-    public DressingHouseState(GameStateManager gsm, Player player) {
+    public DressingHouseState(GameStateManager gsm, Player player, ButtonManager buttonManager) {
         this.gsm = gsm;
         this.player = player;
+        this.buttonManager = buttonManager; 
 
         background = new Texture("bg/dressingroom.jpeg");
         dressingHouse = new DressingHouse(0, 0);
@@ -58,7 +61,7 @@ public class DressingHouseState implements GameState {
 
     private void saveSkinAndExit() {
         player.setSelectedSkinId(dressingHouse.getCurrentSkinIndex());
-        gsm.setState(new MenuState(gsm, player));
+        gsm.setState(new MenuState(gsm, player, buttonManager));
     }
 
     @Override

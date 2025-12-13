@@ -4,7 +4,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.finpro.frontend.models.SimpleButton;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.finpro.frontend.models.Button;
+import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.strategies.DatingStrategy;
 
 public class StoryState implements GameState {
@@ -15,24 +17,40 @@ public class StoryState implements GameState {
     private DatingStrategy strategy;
     private String boyId;
     private String storyText;
-    private SimpleButton continueButton;
+    private Button continueButton;
+    private ButtonManager buttonManager;
+    private Texture buttonTexture;
+    private Texture buttonHoverTexture;
+    private GlyphLayout layout;
 
-    public StoryState(GameStateManager gsm, DatingStrategy strategy, String boyId) {
+    public StoryState(GameStateManager gsm, DatingStrategy strategy, String boyId, ButtonManager buttonManager) {
         this.gsm = gsm;
         this.strategy = strategy;
         this.boyId = boyId;
+        this.buttonManager = buttonManager;
 
-        background = new Texture("dating/datingGarden.png");
+        background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Conv.png");
         boyImage = new Texture("dating/" + boyId.toLowerCase() + "_full.png");
         font = new BitmapFont();
+        layout = new GlyphLayout();
 
         // Get story from strategy
         storyText = strategy.getStory();
 
-        // Create continue button
-        continueButton = new SimpleButton("Continue",
+        // Load button textures (adjust paths as needed)
+        buttonTexture = new Texture("button_normal.png");
+        buttonHoverTexture = new Texture("button_hover.png");
+
+        // Create continue button using ButtonManager
+        continueButton = buttonManager.createButton(
+            "Continue",
             Gdx.graphics.getWidth() / 2f - 100,
-            100, 200, 60);
+            100,
+            200,
+            60,
+            buttonTexture,
+            buttonHoverTexture
+        );
     }
 
     @Override
@@ -41,7 +59,7 @@ public class StoryState implements GameState {
 
         if (continueButton.isClicked()) {
             // Move to dating conversation state
-            gsm.push(new DatingConversationState(gsm, strategy, boyId));
+            gsm.push(new DatingConversationState(gsm, strategy, boyId, buttonManager));
         }
     }
 
@@ -53,11 +71,16 @@ public class StoryState implements GameState {
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Draw boy image
-        batch.draw(boyImage, 50, 100, 400, 600);
+        int boyPos = 300;
+        if (boyId.equals("ALEX")) {
+            boyPos = 1100;
+        }
+        batch.draw(boyImage, boyPos, 0, boyImage.getWidth() / 2, boyImage.getHeight() / 2);
 
         // Draw story text (wrap text)
-        font.getData().setScale(1.5f);
-        drawWrappedText(batch, font, storyText, 500, 600, 700);
+        font.getData().setScale(3f);
+        drawWrappedText(batch, font, storyText, 300, 900, 700);
+        font.getData().setScale(1f);
 
         // Draw continue button
         continueButton.render(batch, font);
@@ -70,7 +93,6 @@ public class StoryState implements GameState {
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         float currentY = y;
-        com.badlogic.gdx.graphics.g2d.GlyphLayout layout = new com.badlogic.gdx.graphics.g2d.GlyphLayout();
 
         for (String word : words) {
             String testLine = line + word + " ";
@@ -78,7 +100,7 @@ public class StoryState implements GameState {
 
             if (layout.width > maxWidth) {
                 font.draw(batch, line.toString(), x, currentY);
-                currentY -= 30;
+                currentY -= 40;
                 line = new StringBuilder(word + " ");
             } else {
                 line.append(word).append(" ");
@@ -92,6 +114,14 @@ public class StoryState implements GameState {
         background.dispose();
         boyImage.dispose();
         font.dispose();
-        continueButton.dispose();
+        buttonTexture.dispose();
+        buttonHoverTexture.dispose();
+        layout = null;
+
+        // Release button back to pool
+        if (continueButton != null) {
+            buttonManager.releaseButton(continueButton);
+            continueButton = null;
+        }
     }
 }
