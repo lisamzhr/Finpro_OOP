@@ -24,8 +24,6 @@ public class GameStateManager {
         states.peek().update(delta);
     }
     public void render(SpriteBatch batch){
-        System.out.println("Rendering state: " + states.peek().getClass().getSimpleName());
-        System.out.println("Stack size: " + states.size());
         states.peek().render(batch);
     }
     public void dispose() {

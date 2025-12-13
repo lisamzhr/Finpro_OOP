@@ -23,10 +23,10 @@ public class DressingHouseState implements GameState {
     private SimpleButton saveBtn;
     private BitmapFont font;
 
-    public DressingHouseState(GameStateManager gsm, Player player, ButtonManager buttonManager) {
+    public DressingHouseState(GameStateManager gsm, Player player) {
         this.gsm = gsm;
         this.player = player;
-        this.buttonManager = buttonManager; 
+        this.buttonManager = buttonManager;
 
         background = new Texture("bg/dressingroom.jpeg");
         dressingHouse = new DressingHouse(0, 0);
@@ -72,7 +72,7 @@ public class DressingHouseState implements GameState {
         Skin currentSkin = dressingHouse.getCurrentSkin();
 
         sb.begin();
-        
+
         float screenWidth = Gdx.graphics.getWidth();
         float screenHeight = Gdx.graphics.getHeight();
         sb.draw(background, 0, 0, screenWidth, screenHeight);
