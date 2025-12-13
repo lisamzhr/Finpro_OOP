@@ -26,8 +26,9 @@ public class MenuState implements GameState {
 
     public MenuState(GameStateManager gsm, Player player, ButtonManager buttonManager) {
         this.gsm = gsm;
-        this.player = player;
-        this.buttonManager = buttonManager; // FIX: Assign parameter, bukan reassign ke diri sendiri
+        //this.player = player;
+        this.player = new Player("puti", "jdu834", 1);
+        this.buttonManager = buttonManager;
 
         font = new BitmapFont();
         font.getData().setScale(2f);
@@ -57,7 +58,9 @@ public class MenuState implements GameState {
 
         // Create houses with ButtonManager
         datingHouse = new DatingHouse(-20, 260, buttonManager);
-        dressingHouse = new DressingHouse(840, 360); // FIX: Pass buttonManager
+        dressingHouse = new DressingHouse(840, 360);
+
+        System.out.println("Active buttons before load: " + buttonManager.getActiveCount());
     }
 
     @Override
@@ -80,10 +83,7 @@ public class MenuState implements GameState {
             }
         } else {
             // Player belum login - tampilkan button Start Game
-            // FIX: Gunakan button.update() untuk handle hover
             startGameButton.update();
-
-            // FIX: Cek isClicked() TANPA justTouched() karena button sudah handle sendiri
             if (startGameButton.isClicked()) {
                 gsm.setState(new StartGameState(gsm, buttonManager));
             }

@@ -14,10 +14,16 @@ public class GameStateManager {
         states.push(state);
     }
     public void pop(){
-        states.pop();
+        if (!states.isEmpty()) {
+            GameState oldState = states.pop();
+            oldState.dispose();
+        }
     }
     public void set(GameState state){
-        states.pop();
+        if (!states.isEmpty()) {
+            GameState oldState = states.pop();
+            oldState.dispose();
+        }
         states.push(state);
     }
     public void update(float delta){
@@ -40,6 +46,4 @@ public class GameStateManager {
         }
         states.push(state);
     }
-
-
 }

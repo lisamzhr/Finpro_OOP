@@ -79,6 +79,7 @@ public class DatingHouseState implements GameState {
             chrisProfile,
             chrisProfileHover
         );
+        System.out.println("Active buttons before load: " + buttonManager.getActiveCount());
     }
 
     @Override
