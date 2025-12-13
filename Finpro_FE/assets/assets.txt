@@ -1,3 +1,4 @@
+bg/dressingroom.jpeg
 dating/alex_full.png
 dating/alex_profile.png
 dating/background.png
@@ -9,6 +10,12 @@ libgdx.png
 menu/DatingHouse.png
 menu/DressingHouse.png
 menu/background.png
+skins/casual.png
+skins/elegant.png
+skins/formal.png
+skins/modern.png
+skins/sport.png
+skins/traditional.png
 uiskin.atlas
 uiskin.json
 uiskin.png

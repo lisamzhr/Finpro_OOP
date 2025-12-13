@@ -1,6 +1,8 @@
 package com.finpro.frontend.models;
 
+import com.badlogic.gdx.graphics.Texture;
 import com.finpro.frontend.observers.PlayerListener;
+import com.finpro.frontend.factories.SkinFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,7 @@ public class Player {
     private String username;
     private int level;
     private float fashionCoin;
+    private int selectedSkinId = 0; // DEFAULT: Casual (id=0)
 
     // Observer list
     private List<PlayerListener> listeners = new ArrayList<>();
@@ -61,4 +64,22 @@ public class Player {
         this.fashionCoin = fashionCoin;
         notifyListeners("COIN_CHANGED");
     }
+
+    // NEW: Skin management dengan Factory
+    public void setSelectedSkinId(int skinId) {
+        this.selectedSkinId = skinId;
+        notifyListeners("SKIN_CHANGED");
+    }
+
+    public int getSelectedSkinId() {
+        return selectedSkinId;
+    }
+
+    public Skin getCurrentSkin() {
+        return SkinFactory.createSkin(selectedSkinId);
+    }
+
+    // DEPRECATED: Hapus method ini, ganti pake skin ID
+    // public void setOutfitSkin(Texture skin) { ... }
+    // public Texture getOutfitSkin() { ... }
 }

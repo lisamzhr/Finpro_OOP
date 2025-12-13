@@ -2,7 +2,6 @@ package com.finpro.frontend.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -28,8 +27,8 @@ public class MenuState implements GameState {
 
     public MenuState(GameStateManager gsm, Player player) {
         this.gsm = gsm;
-        //this.player = player; //yang bener ini
-        this.player = new Player("LKJH", "lili", 1); //buat trial
+        this.player = player;
+        //this.player = new Player("LKJH", "lili", 1); // Hapus ini, pake parameter
 
         font = new BitmapFont();
         font.getData().setScale(2f);
@@ -51,18 +50,29 @@ public class MenuState implements GameState {
 
     @Override
     public void update(float delta) {
-        // Kalau player udah ada (sudah login), skip button logic
         if (player != null) {
-            return;
-        }
+            datingHouse.update();
+            dressingHouse.update();
 
-        // Kalau belum login, tunggu klik "Start Game"
-        if (Gdx.input.justTouched()) {
-            float x = Gdx.input.getX();
-            float y = Gdx.graphics.getHeight() - Gdx.input.getY();
+            // Check house clicks
+            if (Gdx.input.justTouched()) {
+                if (dressingHouse.isHovered()) {
+                    gsm.setState(new DressingHouseState(gsm, player));
+                    return;
+                } else if (datingHouse.isHovered()) {
+                    // gsm.setState(new DatingHouseState(gsm, player));
+                    System.out.println("Dating House clicked!");
+                    return;
+                }
+            }
+        } else {
+            if (Gdx.input.justTouched()) {
+                float x = Gdx.input.getX();
+                float y = Gdx.graphics.getHeight() - Gdx.input.getY();
 
-            if (startGameButton.contains(x, y)) {
-                gsm.set(new StartGameState(gsm));
+                if (startGameButton.contains(x, y)) {
+                    gsm.setState(new StartGameState(gsm));
+                }
             }
         }
     }
@@ -72,7 +82,7 @@ public class MenuState implements GameState {
         // Draw background
         batch.begin();
         batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        batch.end(); // End dulu sebelum shapeRenderer
+        batch.end();
 
         if (player == null) {
             // Tampilan awal: button "Start Game"
@@ -88,19 +98,17 @@ public class MenuState implements GameState {
                 startGameButton.y + startGameButton.height/2 + 15);
             batch.end();
         } else {
-            //tampilan setelah login
-            datingHouse.update();
-
+            // Tampilan setelah login
             batch.begin();
 
-            //info player
+            // Info player
             font.getData().setScale(1.5f);
             font.draw(batch, "Welcome: " + player.getUsername(), 100, 400);
             font.draw(batch, "ID: " + player.getId(), 100, 370);
             font.draw(batch, "Level: " + player.getLevel(), 100, 340);
             font.draw(batch, "Coin: " + player.getFashionCoin(), 100, 310);
 
-            //render house
+            // Render houses
             datingHouse.render(batch);
             dressingHouse.render(batch);
 
@@ -110,12 +118,10 @@ public class MenuState implements GameState {
 
     @Override
     public void dispose() {
-        backgroundTexture.dispose();
-        if (font != null) {
-            font.dispose();
-        }
-        if (shapeRenderer != null) {
-            shapeRenderer.dispose();
-        }
+        if (backgroundTexture != null) backgroundTexture.dispose();
+        if (font != null) font.dispose();
+        if (shapeRenderer != null) shapeRenderer.dispose();
+        if (datingHouse != null) datingHouse.dispose();
+        if (dressingHouse != null) dressingHouse.dispose();
     }
 }

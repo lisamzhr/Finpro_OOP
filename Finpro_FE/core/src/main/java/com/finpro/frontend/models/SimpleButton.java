@@ -52,6 +52,5 @@ public class SimpleButton {
     }
 
     public void dispose() {
-        // Cleanup if needed
     }
 }
