@@ -11,8 +11,9 @@ public class ChallengeObjectManager {
     private ChallengeObjectFactory factory;
     private List<ChallengeObject> activeObjects;
 
-    public ChallengeObjectManager() {
-        this.factory = new ChallengeObjectFactory();
+    // Constructor with Dependency Injection
+    public ChallengeObjectManager(ChallengeObjectFactory factory) {
+        this.factory = factory;
         this.activeObjects = new ArrayList<>();
     }
 
@@ -57,13 +58,14 @@ public class ChallengeObjectManager {
     }
 
     public int checkClicked() {
-        int pointsEarned = 0;
+        int pointsEarned =0;
         List<ChallengeObject> toRemove = new ArrayList<>();
 
         for (ChallengeObject obj : activeObjects) {
             if (obj.isClicked()) {
                 pointsEarned += obj.getPointValue();
                 toRemove.add(obj);
+                obj.resetClick();
             }
         }
 
@@ -80,6 +82,15 @@ public class ChallengeObjectManager {
             factory.releaseObject(obj);
         }
         activeObjects.clear();
+    }
+
+    public void handleClick(float clickX, float clickY) {
+        for (ChallengeObject obj : activeObjects) {
+            if (obj.contains(clickX, clickY)) {
+                obj.onClick();
+                break; // Hanya klik 1 object per click
+            }
+        }
     }
 
     public int getActiveCount() {

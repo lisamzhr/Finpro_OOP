@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.finpro.frontend.GameManager;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.strategies.DatingStrategy;
@@ -20,6 +21,7 @@ public class DatingConversationState implements GameState {
     private DatingStrategy strategy;
     private String boyId;
     private ButtonManager buttonManager;
+    private GameManager gameManager;
 
     private int currentStage;
     private int totalPoints;
@@ -46,7 +48,6 @@ public class DatingConversationState implements GameState {
 
         choiceButtons = new ArrayList<>();
 
-        System.out.println("=== DatingConversationState Created ===");
         System.out.println("Active buttons before load: " + buttonManager.getActiveCount());
 
         loadConversationStage();

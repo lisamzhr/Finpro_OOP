@@ -73,10 +73,13 @@ public class MenuState implements GameState {
             // Check house clicks
             if (Gdx.input.justTouched()) {
                 if (dressingHouse.isHovered()) {
+                    buttonManager.releaseButton(startGameButton);
                     gsm.setState(new DressingHouseState(gsm, player));
                     return;
                 } else if (datingHouse.isHovered()) {
-                    // gsm.setState(new DatingHouseState(gsm, player, buttonManager));
+                    //buttonManager.releaseButton(startGameButton);
+                    gsm.setState(new DatingHouseState(gsm, buttonManager));
+                    buttonManager.releaseButton(startGameButton);
                     System.out.println("Dating House clicked!");
                     return;
                 }
@@ -85,6 +88,7 @@ public class MenuState implements GameState {
             // Player belum login - tampilkan button Start Game
             startGameButton.update();
             if (startGameButton.isClicked()) {
+                buttonManager.releaseButton(startGameButton);
                 gsm.setState(new StartGameState(gsm, buttonManager));
             }
         }
@@ -118,6 +122,7 @@ public class MenuState implements GameState {
 
     @Override
     public void dispose() {
+        buttonManager.releaseButton(startGameButton);
         if (backgroundTexture != null) {
             backgroundTexture.dispose();
         }
@@ -141,7 +146,6 @@ public class MenuState implements GameState {
         if (dressingHouse != null) {
             dressingHouse.dispose();
         }
-
         // Release button back to pool
         if (startGameButton != null && buttonManager != null) {
             buttonManager.releaseButton(startGameButton);
