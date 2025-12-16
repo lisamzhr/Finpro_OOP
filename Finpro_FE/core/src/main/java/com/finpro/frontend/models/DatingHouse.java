@@ -56,10 +56,6 @@ public class DatingHouse {
     private void onClicked() {
         System.out.println("Dating House clicked! Entering DatingHouseState...");
 
-        // PUSH DATING HOUSE STATE WITH BUTTON MANAGER
-        if (gameManager != null && gameManager.getGsm() != null) {
-            gameManager.getGsm().push(new DatingHouseState(gameManager.getGsm(), buttonManager));
-        }
     }
 
     public void dispose() {

@@ -54,16 +54,6 @@ public class ChallengeObject {
         y += velocityY * delta;
         bounds.setPosition(x, y);
 
-        // Check mouse click
-        if (Gdx.input.justTouched()) {
-            Vector3 mousePos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            mousePos.y = Gdx.graphics.getHeight() - mousePos.y;
-
-            if (bounds.contains(mousePos.x, mousePos.y)) {
-                isClicked = true;
-                isActive = false;
-            }
-        }
 
         // Deactivate if out of bounds
         if (x < -width || x > Gdx.graphics.getWidth() ||
@@ -95,6 +85,18 @@ public class ChallengeObject {
     // Getters
     public boolean isClicked() {
         return isClicked;
+    }
+    public void resetClick() {
+        isClicked = false;
+    }
+
+    public void onClick() {
+        this.isClicked = true;
+    }
+
+    public boolean contains(float x, float y) {
+        return x >= this.x && x <= this.x + width &&
+            y >= this.y && y <= this.y + height;
     }
 
     public boolean isActive() {
