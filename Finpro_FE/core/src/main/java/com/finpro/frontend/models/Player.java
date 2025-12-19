@@ -1,8 +1,7 @@
 package com.finpro.frontend.models;
 
-import com.badlogic.gdx.graphics.Texture;
 import com.finpro.frontend.observers.PlayerListener;
-import com.finpro.frontend.factories.SkinFactory;
+import com.finpro.frontend.factory.SkinFactory;
 import java.util.ArrayList;
 import java.util.List;
 
