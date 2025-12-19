@@ -1,5 +1,5 @@
 // factories/SkinFactory.java
-package com.finpro.frontend.factories;
+package com.finpro.frontend.factory;
 
 import com.finpro.frontend.models.*;
 
