@@ -27,8 +27,12 @@ public class Main extends ApplicationAdapter {
         System.out.println("=== Game Started ===");
         System.out.println("ButtonManager created");
 
-        // Push MenuState with buttonManager
-        gsm.push(new MenuState(gsm, null, buttonManager));
+        // ✅ Initialize default player in GSM
+        gsm.initializeDefaultPlayer(); // Ini create player dengan id="puti", username="jdu834", level=1
+        System.out.println("Player initialized: " + gsm.getPlayer().getUsername());
+
+        // ✅ Push MenuState - gak perlu pass player lagi!
+        gsm.push(new MenuState(gsm, buttonManager));
 
         // Save gsm to GameManager if needed
         if (GameManager.getInstance() != null) {

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.finpro.frontend.models.Button;
+import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.strategies.EasyDatingStrategy;
 import com.finpro.frontend.strategies.HardDatingStrategy;
@@ -14,6 +15,7 @@ public class DatingHouseState implements GameState {
     private Texture background;
     private BitmapFont font;
     private GameStateManager gsm;
+    private Player player;
     private ButtonManager buttonManager;
 
     // Boy selection buttons
@@ -26,13 +28,14 @@ public class DatingHouseState implements GameState {
     private Texture brianProfile;
     private Texture chrisProfile;
 
-    // Hover textures (optional - can be same as normal or slightly different)
+    // Hover textures
     private Texture alexProfileHover;
     private Texture brianProfileHover;
     private Texture chrisProfileHover;
 
-    public DatingHouseState(GameStateManager gsm, ButtonManager buttonManager) {
+    public DatingHouseState(GameStateManager gsm, ButtonManager buttonManager) { // ✅ HAPUS player parameter
         this.gsm = gsm;
+        this.player = gsm.getPlayer(); // ✅ Ambil player dari GSM
         this.buttonManager = buttonManager;
 
         background = new Texture("dating/BackgroundDatingState.png");
@@ -43,7 +46,7 @@ public class DatingHouseState implements GameState {
         brianProfile = new Texture("dating/brian_profile.png");
         chrisProfile = new Texture("dating/chris_profile.png");
 
-        // Load hover textures (you can create highlighted versions or use same textures)
+        // Load hover textures
         alexProfileHover = new Texture("dating/alex_profile.png");
         brianProfileHover = new Texture("dating/brian_profile.png");
         chrisProfileHover = new Texture("dating/chris_profile.png");
@@ -75,11 +78,18 @@ public class DatingHouseState implements GameState {
             "Chris",
             centerX + 300,
             200,
-            chrisProfile.getWidth(), chrisProfile.getHeight(),
+            chrisProfile.getWidth(),
+            chrisProfile.getHeight(),
             chrisProfile,
             chrisProfileHover
         );
-        System.out.println("Active buttons before load: " + buttonManager.getActiveCount());
+
+        System.out.println("DatingHouse - Active buttons: " + buttonManager.getActiveCount());
+
+        // ✅ Debug: Check player
+        if (player != null) {
+            System.out.println("DatingHouse - Player: " + player.getUsername() + " | Skin ID: " + player.getSelectedSkinId());
+        }
     }
 
     @Override
@@ -89,7 +99,7 @@ public class DatingHouseState implements GameState {
         brianButton.update();
         chrisButton.update();
 
-        // Check button clicks
+        // ✅ Check button clicks - HAPUS player parameter
         if (alexButton.isClicked()) {
             gsm.push(new StoryState(gsm, new EasyDatingStrategy(), "ALEX", buttonManager));
         }
@@ -108,12 +118,12 @@ public class DatingHouseState implements GameState {
         // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Draw title (optional)
+        // Draw title
         font.getData().setScale(2f);
-        // Add your title text here if needed
+        font.draw(batch, "Choose Your Date", Gdx.graphics.getWidth()/2 - 150, Gdx.graphics.getHeight() - 50);
         font.getData().setScale(1f);
 
-        // Draw buttons
+        // Draw boy buttons
         alexButton.render(batch, font);
         brianButton.render(batch, font);
         chrisButton.render(batch, font);

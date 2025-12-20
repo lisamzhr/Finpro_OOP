@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.finpro.frontend.GameManager;
 import com.finpro.frontend.models.Button;
+import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.strategies.DatingStrategy;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 
 public class DatingConversationState implements GameState {
     protected GameStateManager gsm;
+    private Player player; // ✅ NEW: Player reference
     private Texture background;
     private Texture boyImage;
     private BitmapFont font;
@@ -32,8 +34,9 @@ public class DatingConversationState implements GameState {
     private ShapeRenderer shapeRenderer;
 
     public DatingConversationState(GameStateManager gsm, DatingStrategy strategy,
-                                   String boyId, ButtonManager buttonManager) {
+                                   String boyId, ButtonManager buttonManager) { // ✅ Tambah player parameter
         this.gsm = gsm;
+        this.player = player; // ✅ Store player
         this.strategy = strategy;
         this.boyId = boyId;
         this.buttonManager = buttonManager;
@@ -131,8 +134,8 @@ public class DatingConversationState implements GameState {
 
                 System.out.println("Active buttons after cleanup: " + buttonManager.getActiveCount());
 
-                // Move to challenge state
-                gsm.push(new ChallengeState(gsm, strategy, boyId, totalPoints, buttonManager));
+                // Move to challenge state - pass player
+                gsm.push(new ChallengeState(gsm, strategy, boyId, totalPoints, buttonManager)); // ✅ Pass player
             }
         }
     }
@@ -144,6 +147,14 @@ public class DatingConversationState implements GameState {
         // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        // ✅ Draw PLAYER with selected skin (kiri)
+        float playerX = 50;
+        float playerY = 50;
+        float playerWidth = 250;
+        float playerHeight = 500;
+        player.render(batch, playerX, playerY, playerWidth, playerHeight);
+
+        // Draw boy image (kanan)
         int boyPos = 300;
         if (boyId.equals("ALEX")) {
             boyPos = 1100;

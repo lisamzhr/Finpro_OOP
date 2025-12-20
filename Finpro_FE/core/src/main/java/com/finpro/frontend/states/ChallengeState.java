@@ -1,11 +1,12 @@
 package com.finpro.frontend.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter; // TAMBAHKAN
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.finpro.frontend.models.Button;
+import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.ChallengeObjectManager;
 import com.finpro.frontend.factory.ChallengeObjectFactory;
@@ -15,6 +16,7 @@ import com.finpro.frontend.strategies.MediumChallenge;
 
 public class ChallengeState implements GameState {
     protected GameStateManager gsm;
+    private Player player;
     private Texture background;
     private BitmapFont font;
     private DatingStrategy datingStrategy;
@@ -31,8 +33,9 @@ public class ChallengeState implements GameState {
     private boolean showContinueButton;
 
     public ChallengeState(GameStateManager gsm, DatingStrategy datingStrategy,
-                          String boyId, int conversationPoints, ButtonManager buttonManager) {
+                          String boyId, int conversationPoints, ButtonManager buttonManager) { // ✅ Hapus player parameter
         this.gsm = gsm;
+        this.player = gsm.getPlayer(); // ✅ Ambil player dari GSM
         this.datingStrategy = datingStrategy;
         this.boyId = boyId;
         this.conversationPoints = conversationPoints;
@@ -63,11 +66,14 @@ public class ChallengeState implements GameState {
             buttonHoverTexture
         );
 
-        // ========== TAMBAHKAN INI ==========
         setupInputProcessor();
+
+        // ✅ Debug: Check player
+        if (player != null) {
+            System.out.println("ChallengeState - Player: " + player.getUsername() + " | Skin ID: " + player.getSelectedSkinId());
+        }
     }
 
-    // ========== METHOD BARU ==========
     private void setupInputProcessor() {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
@@ -116,6 +122,7 @@ public class ChallengeState implements GameState {
                 System.out.println("Challenge Score: " + challengeScore);
                 System.out.println("Total Points: " + totalPoints);
 
+                // ✅ Pass to ResultState - HAPUS player parameter
                 gsm.push(new ResultState(gsm, datingStrategy, boyId, totalPoints, buttonManager));
             }
         }
@@ -125,15 +132,26 @@ public class ChallengeState implements GameState {
     public void render(SpriteBatch batch) {
         batch.begin();
 
+        // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        // ✅ Draw PLAYER with selected skin (pojok kiri bawah, kecil)
+        float playerX = 30;
+        float playerY = 30;
+        float playerWidth = 120;
+        float playerHeight = 240;
+        player.render(batch, playerX, playerY, playerWidth, playerHeight);
+
+        // Draw title
         font.getData().setScale(2f);
         font.draw(batch, "CHALLENGE TIME!",
             Gdx.graphics.getWidth() / 2f - 150,
             Gdx.graphics.getHeight() - 50);
 
+        // Draw challenge game
         challengeGame.render(batch, font);
 
+        // Draw continue button if game completed
         if (showContinueButton) {
             continueButton.render(batch, font);
         }
@@ -143,7 +161,6 @@ public class ChallengeState implements GameState {
 
     @Override
     public void dispose() {
-        // ========== TAMBAHKAN INI ==========
         // Clear input processor saat state di-dispose
         Gdx.input.setInputProcessor(null);
 

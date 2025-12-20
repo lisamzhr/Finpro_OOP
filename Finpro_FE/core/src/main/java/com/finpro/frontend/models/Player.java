@@ -1,5 +1,6 @@
 package com.finpro.frontend.models;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.finpro.frontend.observers.PlayerListener;
 import com.finpro.frontend.factory.SkinFactory;
 import java.util.ArrayList;
@@ -12,7 +13,7 @@ public class Player {
     private int level;
     private float fashionCoin;
     private float gameCoin;
-    private int selectedSkinId = 0; // DEFAULT: Casual (id=0)
+    private int selectedSkinId = 0;
 
     // Observer list
     private List<PlayerListener> listeners = new ArrayList<>();
@@ -77,7 +78,7 @@ public class Player {
         this.gameCoin = gameCoin;
     }
 
-    // NEW: Skin management dengan Factory
+    // Skin management dengan Factory
     public void setSelectedSkinId(int skinId) {
         this.selectedSkinId = skinId;
         notifyListeners("SKIN_CHANGED");
@@ -91,7 +92,23 @@ public class Player {
         return SkinFactory.createSkin(selectedSkinId);
     }
 
-    // DEPRECATED: Hapus method ini, ganti pake skin ID
-    // public void setOutfitSkin(Texture skin) { ... }
-    // public Texture getOutfitSkin() { ... }
+    // ✅ NEW: Render method - Player renders itself!
+    /**
+     * Render player with current selected skin
+     * @param batch SpriteBatch to render with
+     * @param x X position
+     * @param y Y position
+     * @param width Width of player sprite
+     * @param height Height of player sprite
+     */
+    public void render(SpriteBatch batch, float x, float y, float width, float height) {
+        Skin currentSkin = getCurrentSkin();
+        batch.draw(currentSkin.getTexture(), x, y, width, height);
+        //currentSkin.dispose(); // Auto-dispose after render
+    }
+
+    // ✅ OPTIONAL: Overload untuk default size
+    public void render(SpriteBatch batch, float x, float y) {
+        render(batch, x, y, 200, 400); // Default size
+    }
 }

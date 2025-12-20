@@ -141,7 +141,7 @@ public class StartGameState implements GameState {
 
             if (okButton.isClicked()) {
                 Player p = new Player(createdPlayerId, tempUsername, 1);
-                gsm.set(new MenuState(gsm, p, buttonManager));
+                gsm.set(new MenuState(gsm, buttonManager));
             }
         }
     }
@@ -200,7 +200,7 @@ public class StartGameState implements GameState {
                     System.out.println("LOGIN SUCCESS!");
 
                     Player p = new Player(pid, uname, Integer.valueOf(lvl));
-                    Gdx.app.postRunnable(() -> gsm.set(new MenuState(gsm, p, buttonManager)));
+                    Gdx.app.postRunnable(() -> gsm.set(new MenuState(gsm, buttonManager)));
                 }
 
                 @Override
