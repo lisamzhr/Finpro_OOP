@@ -2,9 +2,12 @@ bg/dressingroom.jpeg
 button_hover.png
 button_normal.png
 dating/BackgroundDatingState.png
+dating/alex_Background_Chall.png
 dating/alex_Background_Conv.png
+dating/alex_cup_cake.png
 dating/alex_full.png
 dating/alex_profile.png
+dating/alex_stroberi_cake.png
 dating/background.png
 dating/brian_Background_Chall.png
 dating/brian_Background_Conv.png
@@ -13,9 +16,12 @@ dating/brian_full.png
 dating/brian_profile.png
 dating/brian_purple_flower.png
 dating/brian_red_flower.png
+dating/chris_Background_Chall.png
 dating/chris_Background_Conv.png
 dating/chris_full.png
+dating/chris_one_painting.png
 dating/chris_profile.png
+dating/chris_two_painting.png
 dating/datingGarden.png
 img.png
 libgdx.png
