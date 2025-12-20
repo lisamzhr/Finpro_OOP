@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.finpro.frontend.GameManager;
 import com.finpro.frontend.models.DatingHouse;
 import com.finpro.frontend.models.DressingHouse;
 import com.finpro.frontend.models.Player;
@@ -23,11 +24,15 @@ public class MenuState implements GameState {
     private Button startGameButton;
     private Texture buttonTexture;
     private Texture buttonHoverTexture;
+    private GameManager gameManager;
 
-    public MenuState(GameStateManager gsm, Player player, ButtonManager buttonManager) {
+    public MenuState(GameStateManager gsm, ButtonManager buttonManager) {
         this.gsm = gsm;
-        //this.player = player;
-        this.player = new Player("puti", "jdu834", 1);
+        this.player = gsm.getPlayer();
+        //this.player = new Player("puti", "jdu834", 1);
+        //gsm.setPlayer(player);
+        gameManager = GameManager.getInstance();
+        gameManager.setCurrentPlayer(player);
         this.buttonManager = buttonManager;
 
         font = new BitmapFont();
@@ -88,7 +93,6 @@ public class MenuState implements GameState {
             // Player belum login - tampilkan button Start Game
             startGameButton.update();
             if (startGameButton.isClicked()) {
-                buttonManager.releaseButton(startGameButton);
                 gsm.setState(new StartGameState(gsm, buttonManager));
             }
         }

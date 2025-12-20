@@ -87,4 +87,10 @@ public class PlayerController {
                     .body(Map.of("error", "Internal server error"));
         }
     }
+    @PostMapping("/update-level")
+    public ResponseEntity<?> updateLevel(@RequestBody Player request) {
+        // Logic update level
+        Player player = playerService.updateLevel(request.getUsername(), request.getLevel());
+        return ResponseEntity.ok(player);
+    }
 }

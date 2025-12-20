@@ -4,8 +4,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.finpro.frontend.GameManager;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.ButtonManager;
+import com.finpro.frontend.models.Player;
 import com.finpro.frontend.strategies.EasyDatingStrategy;
 import com.finpro.frontend.strategies.HardDatingStrategy;
 import com.finpro.frontend.strategies.MediumDatingStrategy;
@@ -15,6 +17,8 @@ public class DatingHouseState implements GameState {
     private BitmapFont font;
     private GameStateManager gsm;
     private ButtonManager buttonManager;
+    private GameManager gameManager;
+    private Player player;
 
     // Boy selection buttons
     private Button alexButton;
@@ -34,6 +38,8 @@ public class DatingHouseState implements GameState {
     public DatingHouseState(GameStateManager gsm, ButtonManager buttonManager) {
         this.gsm = gsm;
         this.buttonManager = buttonManager;
+        this.player = gsm.getPlayer();
+        gameManager = GameManager.getInstance();
 
         background = new Texture("dating/BackgroundDatingState.png");
         font = new BitmapFont();
@@ -52,7 +58,7 @@ public class DatingHouseState implements GameState {
         float centerX = Gdx.graphics.getWidth() / 2f;
 
         alexButton = buttonManager.createButton(
-            "Alex",
+            "",
             centerX - 700,
             200,
             alexProfile.getWidth(),
@@ -62,7 +68,7 @@ public class DatingHouseState implements GameState {
         );
 
         brianButton = buttonManager.createButton(
-            "Brian",
+            "",
             centerX - 200,
             200,
             brianProfile.getWidth(),
@@ -72,7 +78,7 @@ public class DatingHouseState implements GameState {
         );
 
         chrisButton = buttonManager.createButton(
-            "Chris",
+            "",
             centerX + 300,
             200,
             chrisProfile.getWidth(), chrisProfile.getHeight(),
@@ -90,13 +96,13 @@ public class DatingHouseState implements GameState {
         chrisButton.update();
 
         // Check button clicks
-        if (alexButton.isClicked()) {
+        if (alexButton.isClicked() && player.getLevel() <= 1 && player.getFashionCoin() == 1) {
             gsm.push(new StoryState(gsm, new EasyDatingStrategy(), "ALEX", buttonManager));
         }
-        if (brianButton.isClicked()) {
+        if (brianButton.isClicked() && player.getLevel() <= 2 && player.getFashionCoin() == 2) {// nanti ganti 2
             gsm.push(new StoryState(gsm, new MediumDatingStrategy(), "BRIAN", buttonManager));
         }
-        if (chrisButton.isClicked()) {
+        if (chrisButton.isClicked() && player.getLevel() == 3 && player.getFashionCoin() == 3) {
             gsm.push(new StoryState(gsm, new HardDatingStrategy(), "CHRIS", buttonManager));
         }
     }

@@ -12,7 +12,7 @@ public class Player {
     private int level;
     private float fashionCoin;
     private float gameCoin;
-    private int selectedSkinId = 0; // DEFAULT: Casual (id=0)
+    private int selectedSkinId = 0;
 
     // Observer list
     private List<PlayerListener> listeners = new ArrayList<>();
@@ -91,7 +91,4 @@ public class Player {
         return SkinFactory.createSkin(selectedSkinId);
     }
 
-    // DEPRECATED: Hapus method ini, ganti pake skin ID
-    // public void setOutfitSkin(Texture skin) { ... }
-    // public Texture getOutfitSkin() { ... }
 }

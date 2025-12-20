@@ -118,8 +118,6 @@ public class MediumChallenge implements ChallengeGame {
 
     @Override
     public void dispose() {
-        // Don't dispose manager - it's shared!
-        // Only dispose textures that this class owns
         objectManager.clearAll();
         ingredientTexture.dispose();
         badIngredientTexture.dispose();

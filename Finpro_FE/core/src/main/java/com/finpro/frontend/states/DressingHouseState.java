@@ -61,7 +61,7 @@ public class DressingHouseState implements GameState {
 
     private void saveSkinAndExit() {
         player.setSelectedSkinId(dressingHouse.getCurrentSkinIndex());
-        gsm.setState(new MenuState(gsm, player, buttonManager));
+        gsm.setState(new MenuState(gsm, buttonManager));
     }
 
     @Override

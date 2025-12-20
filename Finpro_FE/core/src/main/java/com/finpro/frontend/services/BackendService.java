@@ -6,7 +6,6 @@ import com.badlogic.gdx.net.HttpRequestBuilder;
 
 public class BackendService {
 
-    // COBA GANTI KE 127.0.0.1 jika localhost tidak work
     private static final String BASE_URL = "http://127.0.0.1:8081/api/player";
 
     public interface RequestCallback {
@@ -96,5 +95,23 @@ public class BackendService {
                 callback.onError("Request cancelled");
             }
         });
+    }
+    public void updateLevel(String username, int newLevel, RequestCallback callback) {
+        String json = "{\"username\":\"" + username + "\",\"level\":" + newLevel + "}";
+
+        System.out.println("\n=== UPDATE LEVEL REQUEST ===");
+        System.out.println("URL: " + BASE_URL + "/update-level");
+        System.out.println("Body: " + json);
+
+        HttpRequestBuilder builder = new HttpRequestBuilder();
+        Net.HttpRequest request = builder.newRequest()
+            .method(Net.HttpMethods.POST)
+            .url(BASE_URL + "/update-level")
+            .header("Content-Type", "application/json")
+            .content(json)
+            .timeout(30000)
+            .build();
+
+        sendRequest(request, callback, "UPDATE_LEVEL");
     }
 }

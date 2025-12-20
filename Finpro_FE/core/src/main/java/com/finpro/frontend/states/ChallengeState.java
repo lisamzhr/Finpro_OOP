@@ -63,11 +63,9 @@ public class ChallengeState implements GameState {
             buttonHoverTexture
         );
 
-        // ========== TAMBAHKAN INI ==========
         setupInputProcessor();
     }
 
-    // ========== METHOD BARU ==========
     private void setupInputProcessor() {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override

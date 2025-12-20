@@ -6,6 +6,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.ButtonManager;
+import com.finpro.frontend.models.Player;
+import com.finpro.frontend.services.BackendService;
 import com.finpro.frontend.strategies.DatingStrategy;
 
 public class ResultState implements GameState {
@@ -23,6 +25,8 @@ public class ResultState implements GameState {
     private Button backButton;
     private Texture buttonTexture;
     private Texture buttonHoverTexture;
+    private BackendService backendService;
+    private Boolean levelUpdated = false;
 
     public ResultState(GameStateManager gsm, DatingStrategy strategy,
                        String boyId, int totalPoints, ButtonManager buttonManager) {
@@ -32,6 +36,8 @@ public class ResultState implements GameState {
         this.totalPoints = totalPoints;
         this.buttonManager = buttonManager;
         this.passed = strategy.isPass(totalPoints);
+
+        backendService = new BackendService();
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Chall.png");
         resultImage = new Texture(passed ? "dating/background.png" : "dating/background.png");
@@ -54,6 +60,44 @@ public class ResultState implements GameState {
             buttonTexture,
             buttonHoverTexture
         );
+
+        // Update level if passed
+        if (passed && !levelUpdated) {
+            updatePlayerLevel();
+        }
+    }
+
+    private void updatePlayerLevel() {
+        Player player = gsm.getPlayer();
+        if (player == null) {
+            System.err.println("Player is null! Cannot update level.");
+            return;
+        }
+
+        int newLevel = player.getLevel() + 1;
+        String username = player.getUsername(); // ← Pakai username
+
+        System.out.println("Updating player level from " + player.getLevel() + " to " + newLevel);
+
+        // Update local player object
+        player.setLevel(newLevel);
+
+        // Post to backend
+        backendService.updateLevel(username, newLevel, new BackendService.RequestCallback() {
+            @Override
+            public void onSuccess(String response) {
+                System.out.println("Level updated successfully in backend!");
+                System.out.println("Response: " + response);
+                levelUpdated = true;
+            }
+
+            @Override
+            public void onError(String error) {
+                System.err.println("Failed to update level in backend: " + error);
+                // Rollback local change if backend fails
+                player.setLevel(player.getLevel() - 1);
+            }
+        });
     }
 
     @Override
@@ -101,6 +145,7 @@ public class ResultState implements GameState {
         backButton.render(batch, font);
 
         batch.end();
+
     }
 
     @Override
