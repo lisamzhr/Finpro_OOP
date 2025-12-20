@@ -12,10 +12,16 @@ public class GameStateManager {
     public GameStateManager() {
         this.states = new Stack<>();
     }
-    public void push(GameState state){
+
+    public boolean hasPlayer() {
+        return player != null;
+    }
+
+    public void push(GameState state) {
         states.push(state);
     }
-    public void pop(){
+
+    public void pop() {
         if (!states.isEmpty()) {
             GameState oldState = states.pop();
             oldState.dispose();
@@ -37,18 +43,6 @@ public class GameStateManager {
         }
         states.push(state);
     }
-    public void update(float delta){
-        states.peek().update(delta);
-    }
-    public void render(SpriteBatch batch){
-        states.peek().render(batch);
-    }
-    public void dispose() {
-        while (!states.isEmpty()) {
-            GameState state = states.pop();
-            state.dispose();
-        }
-    }
 
     public void setState(GameState state) {
         if (!states.isEmpty()) {
@@ -57,5 +51,24 @@ public class GameStateManager {
         }
         states.push(state);
     }
+    public void update(float delta) {
+        if (!states.isEmpty()) {
+            states.peek().update(delta);
+        }
+    }
 
+    public void render(SpriteBatch batch) {
+        if (!states.isEmpty()) {
+            states.peek().render(batch);
+        }
+    }
+
+    public void dispose() {
+        while (!states.isEmpty()) {
+            GameState state = states.pop();
+            state.dispose();
+        }
+        // Clean up player reference
+        player = null;
+    }
 }

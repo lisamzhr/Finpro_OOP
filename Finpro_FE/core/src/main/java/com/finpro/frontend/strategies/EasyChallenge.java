@@ -8,7 +8,7 @@ import com.finpro.frontend.ChallengeObjectManager;
 
 import java.util.Random;
 
-public class MediumChallenge implements ChallengeGame {
+public class EasyChallenge implements ChallengeGame {
     private ChallengeObjectManager objectManager;
     private Texture ingredientTexture;
     private Texture badIngredientTexture;
@@ -23,10 +23,10 @@ public class MediumChallenge implements ChallengeGame {
     private static final int INGREDIENT_SIZE = 300;
 
     // Constructor with Dependency Injection
-    public MediumChallenge(ChallengeObjectManager objectManager) {
+    public EasyChallenge(ChallengeObjectManager objectManager) {
         this.objectManager = objectManager;
-        ingredientTexture = new Texture("dating/brian_purple_flower.png");
-        badIngredientTexture = new Texture("dating/brian_red_flower.png");
+        ingredientTexture = new Texture("dating/alex_cup_cake.png");
+        badIngredientTexture = new Texture("dating/alex_stroberi_cake.png");
         random = new Random();
         score = 0;
         spawnTimer = 0;
@@ -91,7 +91,7 @@ public class MediumChallenge implements ChallengeGame {
             Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 50);
 
         font.getData().setScale(1f);
-        font.draw(batch, "Click PURPLE flowers! Avoid RED ones!",
+        font.draw(batch, "Click Cup cakes! Avoid Strawberry cake ones!",
             50, Gdx.graphics.getHeight() - 100);
 
         if (completed) {
@@ -118,6 +118,8 @@ public class MediumChallenge implements ChallengeGame {
 
     @Override
     public void dispose() {
+        // Don't dispose manager - it's shared!
+        // Only dispose textures that this class owns
         objectManager.clearAll();
         ingredientTexture.dispose();
         badIngredientTexture.dispose();

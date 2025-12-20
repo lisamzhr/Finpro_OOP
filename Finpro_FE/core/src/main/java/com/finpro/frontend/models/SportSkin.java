@@ -1,8 +1,9 @@
+// models/SportSkin.java
 package com.finpro.frontend.models;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class SportSkin implements Skin{
+public class SportSkin implements Skin {
     private Texture texture;
 
     public SportSkin() {
@@ -22,6 +23,11 @@ public class SportSkin implements Skin{
     @Override
     public int getSkinId() {
         return 2;
+    }
+
+    @Override
+    public int getPrice() {
+        return 2; // ✅ 2 COINS
     }
 
     @Override
