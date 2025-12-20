@@ -1,3 +1,4 @@
+// models/ModernSkin.java
 package com.finpro.frontend.models;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,11 @@ public class ModernSkin implements Skin {
     @Override
     public int getSkinId() {
         return 4;
+    }
+
+    @Override
+    public int getPrice() {
+        return 4; // ✅ 4 COINS
     }
 
     @Override

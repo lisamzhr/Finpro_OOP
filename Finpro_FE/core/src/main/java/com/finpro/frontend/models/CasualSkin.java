@@ -1,3 +1,4 @@
+// models/CasualSkin.java
 package com.finpro.frontend.models;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,11 @@ public class CasualSkin implements Skin {
     @Override
     public int getSkinId() {
         return 0;
+    }
+
+    @Override
+    public int getPrice() {
+        return 0; // ✅ FREE
     }
 
     @Override

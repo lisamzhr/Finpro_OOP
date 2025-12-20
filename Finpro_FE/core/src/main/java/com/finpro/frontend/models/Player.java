@@ -1,3 +1,4 @@
+// models/Player.java
 package com.finpro.frontend.models;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,14 +16,13 @@ public class Player {
     private float gameCoin;
     private int selectedSkinId = 0;
 
-    // Observer list
     private List<PlayerListener> listeners = new ArrayList<>();
 
     public Player(String id, String username, int level) {
         this.id = id;
         this.username = username;
         this.level = level;
-        fashionCoin = 5;
+        fashionCoin = 5; // Start with 5 coins
         gameCoin = 0;
     }
 
@@ -78,7 +78,7 @@ public class Player {
         this.gameCoin = gameCoin;
     }
 
-    // Skin management dengan Factory
+    // Skin management
     public void setSelectedSkinId(int skinId) {
         this.selectedSkinId = skinId;
         notifyListeners("SKIN_CHANGED");
@@ -92,23 +92,21 @@ public class Player {
         return SkinFactory.createSkin(selectedSkinId);
     }
 
-    // ✅ NEW: Render method - Player renders itself!
-    /**
-     * Render player with current selected skin
-     * @param batch SpriteBatch to render with
-     * @param x X position
-     * @param y Y position
-     * @param width Width of player sprite
-     * @param height Height of player sprite
-     */
+    // ✅ Check if player has enough coins for a skin
+    public boolean canAffordSkin(int skinId) {
+        Skin skin = SkinFactory.createSkin(skinId);
+        boolean canAfford = fashionCoin >= skin.getPrice();
+        skin.dispose();
+        return canAfford;
+    }
+
+    // Render method
     public void render(SpriteBatch batch, float x, float y, float width, float height) {
         Skin currentSkin = getCurrentSkin();
         batch.draw(currentSkin.getTexture(), x, y, width, height);
-        //currentSkin.dispose(); // Auto-dispose after render
     }
 
-    // ✅ OPTIONAL: Overload untuk default size
     public void render(SpriteBatch batch, float x, float y) {
-        render(batch, x, y, 200, 400); // Default size
+        render(batch, x, y, 200, 400);
     }
 }

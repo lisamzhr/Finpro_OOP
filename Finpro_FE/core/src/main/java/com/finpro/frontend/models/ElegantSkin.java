@@ -1,3 +1,4 @@
+// models/ElegantSkin.java
 package com.finpro.frontend.models;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,11 @@ public class ElegantSkin implements Skin {
     @Override
     public int getSkinId() {
         return 5;
+    }
+
+    @Override
+    public int getPrice() {
+        return 5; // ✅ 5 COINS
     }
 
     @Override
