@@ -2,6 +2,7 @@ package com.finpro.frontend.states;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -22,21 +23,36 @@ public class DressingHouseState implements GameState {
     private Texture background;
     private SimpleButton saveBtn;
     private BitmapFont font;
+    private BitmapFont smallFont;
 
-    public DressingHouseState(GameStateManager gsm, Player player) {
+    private String statusMessage = "";
+    private float statusTimer = 0;
+
+    public DressingHouseState(GameStateManager gsm, Player player, ButtonManager buttonManager) {
         this.gsm = gsm;
         this.player = player;
         this.buttonManager = buttonManager;
 
         background = new Texture("bg/dressingroom.jpeg");
         dressingHouse = new DressingHouse(0, 0);
-        saveBtn = new SimpleButton("SAVE", 260, 100, 200, 80);
+
+        saveBtn = new SimpleButton("SELECT", 260, 100, 200, 80);
+
         font = new BitmapFont();
+        smallFont = new BitmapFont();
+        smallFont.getData().setScale(1.2f);
     }
 
     @Override
     public void update(float dt) {
         handleInput();
+
+        if (statusTimer > 0) {
+            statusTimer -= dt;
+            if (statusTimer <= 0) {
+                statusMessage = "";
+            }
+        }
     }
 
     private void handleInput() {
@@ -51,25 +67,40 @@ public class DressingHouseState implements GameState {
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-            saveSkinAndExit();
+            selectSkin();
         }
 
         if (saveBtn.isClicked()) {
-            saveSkinAndExit();
+            selectSkin();
         }
     }
 
-    private void saveSkinAndExit() {
-        player.setSelectedSkinId(dressingHouse.getCurrentSkinIndex());
-        gsm.setState(new MenuState(gsm, player, buttonManager));
+    private void selectSkin() {
+        int currentSkinId = dressingHouse.getCurrentSkinIndex();
+
+        if (player.canAffordSkin(currentSkinId)) {
+            player.setSelectedSkinId(currentSkinId);
+            gsm.setState(new MenuState(gsm, buttonManager));
+        } else {
+            Skin skin = dressingHouse.getCurrentSkin();
+            showStatus("Need " + skin.getPrice() + " coins! You have " + (int)player.getFashionCoin());
+            skin.dispose();
+        }
+    }
+
+    private void showStatus(String message) {
+        this.statusMessage = message;
+        this.statusTimer = 3.0f;
     }
 
     @Override
     public void render(SpriteBatch sb) {
-        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f); // Dark gray
+        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         Skin currentSkin = dressingHouse.getCurrentSkin();
+        int currentSkinId = dressingHouse.getCurrentSkinIndex();
+        boolean canAfford = player.canAffordSkin(currentSkinId);
 
         sb.begin();
 
@@ -84,17 +115,49 @@ public class DressingHouseState implements GameState {
         float skinY = (screenHeight - skinHeight) / 2;
         sb.draw(currentSkin.getTexture(), skinX, skinY, skinWidth, skinHeight);
 
+        // Display skin info
+        font.getData().setScale(2.0f);
+        font.setColor(Color.WHITE);
+        font.draw(sb, currentSkin.getName(), screenWidth/2 - 60, screenHeight - 80);
+
+        // Display lock/unlock status
+        if (canAfford) {
+            smallFont.setColor(Color.GREEN);
+            smallFont.draw(sb, "AVAILABLE", screenWidth/2 - 50, screenHeight - 170);
+        } else {
+            smallFont.setColor(Color.RED);
+            smallFont.draw(sb, "LOCKED", screenWidth/2 - 40, screenHeight - 170);
+        }
+
+        // Display player coins
+        smallFont.setColor(Color.WHITE);
+        smallFont.draw(sb, "Your Coins: " + (int)player.getFashionCoin(), 50, screenHeight - 50);
+
+        // Skin counter
+        int currentIndex = dressingHouse.getCurrentSkinIndex() + 1;
+        smallFont.draw(sb, "Skin " + currentIndex + " / 6", screenWidth/2 - 40, 250);
+
         // Draw save button
         saveBtn.render(sb, font);
 
+        // Display status message
+        if (!statusMessage.isEmpty()) {
+            font.getData().setScale(1.3f);
+            font.setColor(Color.RED);
+            font.draw(sb, statusMessage, 150, 180);
+        }
+
+        font.setColor(Color.WHITE);
+        font.getData().setScale(1f);
+
         sb.end();
 
-        currentSkin.dispose();
     }
 
     @Override
     public void dispose() {
         if (background != null) background.dispose();
         if (font != null) font.dispose();
+        if (smallFont != null) smallFont.dispose();
     }
 }

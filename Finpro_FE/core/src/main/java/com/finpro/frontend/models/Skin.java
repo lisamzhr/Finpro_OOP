@@ -6,5 +6,6 @@ public interface Skin {
     Texture getTexture();
     String getName();
     int getSkinId();
+    int getPrice();
     void dispose();
 }

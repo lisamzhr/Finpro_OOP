@@ -1,5 +1,7 @@
+// models/Player.java
 package com.finpro.frontend.models;
 
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.finpro.frontend.observers.PlayerListener;
 import com.finpro.frontend.factory.SkinFactory;
 import java.util.ArrayList;
@@ -12,16 +14,15 @@ public class Player {
     private int level;
     private float fashionCoin;
     private float gameCoin;
-    private int selectedSkinId = 0; // DEFAULT: Casual (id=0)
+    private int selectedSkinId = 0;
 
-    // Observer list
     private List<PlayerListener> listeners = new ArrayList<>();
 
     public Player(String id, String username, int level) {
         this.id = id;
         this.username = username;
         this.level = level;
-        fashionCoin = 5;
+        fashionCoin = 5; // Start with 5 coins
         gameCoin = 0;
     }
 
@@ -77,7 +78,7 @@ public class Player {
         this.gameCoin = gameCoin;
     }
 
-    // NEW: Skin management dengan Factory
+    // Skin management
     public void setSelectedSkinId(int skinId) {
         this.selectedSkinId = skinId;
         notifyListeners("SKIN_CHANGED");
@@ -91,7 +92,21 @@ public class Player {
         return SkinFactory.createSkin(selectedSkinId);
     }
 
-    // DEPRECATED: Hapus method ini, ganti pake skin ID
-    // public void setOutfitSkin(Texture skin) { ... }
-    // public Texture getOutfitSkin() { ... }
+    // ✅ Check if player has enough coins for a skin
+    public boolean canAffordSkin(int skinId) {
+        Skin skin = SkinFactory.createSkin(skinId);
+        boolean canAfford = fashionCoin >= skin.getPrice();
+        skin.dispose();
+        return canAfford;
+    }
+
+    // Render method
+    public void render(SpriteBatch batch, float x, float y, float width, float height) {
+        Skin currentSkin = getCurrentSkin();
+        batch.draw(currentSkin.getTexture(), x, y, width, height);
+    }
+
+    public void render(SpriteBatch batch, float x, float y) {
+        render(batch, x, y, 200, 400);
+    }
 }
