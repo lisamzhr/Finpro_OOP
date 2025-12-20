@@ -9,9 +9,7 @@ import com.finpro.frontend.models.Button;
 import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.ChallengeObjectManager;
 import com.finpro.frontend.factory.ChallengeObjectFactory;
-import com.finpro.frontend.strategies.DatingStrategy;
-import com.finpro.frontend.strategies.ChallengeGame;
-import com.finpro.frontend.strategies.MediumChallenge;
+import com.finpro.frontend.strategies.*;
 
 public class ChallengeState implements GameState {
     protected GameStateManager gsm;
@@ -87,11 +85,11 @@ public class ChallengeState implements GameState {
                                                   ChallengeObjectManager manager) {
         switch (boyId) {
             case "ALEX":
-                return new MediumChallenge(manager);
+                return new EasyChallenge(manager);
             case "BRIAN":
                 return new MediumChallenge(manager);
             case "CHRIS":
-                return new MediumChallenge(manager);
+                return new HardChallenge(manager);
             default:
                 return new MediumChallenge(manager);
         }
