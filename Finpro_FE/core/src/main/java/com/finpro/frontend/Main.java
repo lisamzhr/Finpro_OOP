@@ -13,6 +13,7 @@ public class Main extends ApplicationAdapter {
     private GameStateManager gsm;
     private ButtonManager buttonManager;
     private BitmapFont defaultFont;
+    // HAPUS INI: private GameManager gameManager;
 
     @Override
     public void create() {
@@ -27,13 +28,11 @@ public class Main extends ApplicationAdapter {
         System.out.println("=== Game Started ===");
         System.out.println("ButtonManager created");
 
-        // Push MenuState with buttonManager
-        gsm.push(new MenuState(gsm, null, buttonManager));
+        // Set GSM ke GameManager dulu
+        GameManager.getInstance().setGsm(gsm);
 
-        // Save gsm to GameManager if needed
-        if (GameManager.getInstance() != null) {
-            GameManager.getInstance().setGsm(gsm);
-        }
+        // Push MenuState - pass GameManager.getInstance()
+        gsm.push(new MenuState(gsm, buttonManager));
     }
 
     @Override
@@ -56,7 +55,6 @@ public class Main extends ApplicationAdapter {
         batch.dispose();
         gsm.dispose();
 
-        // Dispose ButtonManager - this is the ONLY place it should be disposed
         if (buttonManager != null) {
             buttonManager.dispose();
         }

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.ButtonManager;
+import com.finpro.frontend.models.Player;
 import com.finpro.frontend.strategies.DatingStrategy;
 
 public class StoryState implements GameState {
@@ -22,12 +23,13 @@ public class StoryState implements GameState {
     private Texture buttonTexture;
     private Texture buttonHoverTexture;
     private GlyphLayout layout;
+    private Player player;
 
     public StoryState(GameStateManager gsm, DatingStrategy strategy, String boyId, ButtonManager buttonManager) {
-        this.gsm = gsm;
         this.strategy = strategy;
         this.boyId = boyId;
         this.buttonManager = buttonManager;
+        this.gsm = gsm;
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Conv.png");
         boyImage = new Texture("dating/" + boyId.toLowerCase() + "_full.png");
@@ -71,7 +73,7 @@ public class StoryState implements GameState {
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // Draw boy image
-        int boyPos = 300;
+        int boyPos = 800;
         if (boyId.equals("ALEX")) {
             boyPos = 1100;
         }

@@ -10,4 +10,5 @@ public interface ChallengeGame {
     boolean isCompleted();
     int getFinalScore();
     void dispose();
+    void handleClick(float x, float y);
 }

@@ -76,6 +76,7 @@ public class StartGameState implements GameState {
             buttonTexture,
             buttonHoverTexture
         );
+        System.out.println("Register button created: " + registerButton);
 
         loginButton = buttonManager.createButton(
             "LOGIN",
@@ -118,6 +119,7 @@ public class StartGameState implements GameState {
                 return true;
             }
         });
+        System.out.println("Active buttons before load: " + buttonManager.getActiveCount());
     }
 
     @Override
@@ -141,7 +143,8 @@ public class StartGameState implements GameState {
 
             if (okButton.isClicked()) {
                 Player p = new Player(createdPlayerId, tempUsername, 1);
-                gsm.set(new MenuState(gsm, p, buttonManager));
+                gsm.setPlayer(p);
+                gsm.set(new MenuState(gsm, buttonManager));
             }
         }
     }
@@ -200,7 +203,8 @@ public class StartGameState implements GameState {
                     System.out.println("LOGIN SUCCESS!");
 
                     Player p = new Player(pid, uname, Integer.valueOf(lvl));
-                    Gdx.app.postRunnable(() -> gsm.set(new MenuState(gsm, p, buttonManager)));
+                    gsm.setPlayer(p);
+                    Gdx.app.postRunnable(() -> gsm.set(new MenuState(gsm, buttonManager)));
                 }
 
                 @Override
@@ -245,7 +249,6 @@ public class StartGameState implements GameState {
         batch.begin();
 
         if (screenMode.equals("menu")) {
-            renderMenuText(batch);
             registerButton.render(batch, font);
             loginButton.render(batch, font);
         } else if (screenMode.equals("register_input")) {
@@ -482,11 +485,6 @@ public class StartGameState implements GameState {
         }
         if (okButton != null) {
             buttonManager.releaseButton(okButton);
-        }
-
-        // Dispose ButtonManager
-        if (buttonManager != null) {
-            buttonManager.dispose();
         }
     }
 

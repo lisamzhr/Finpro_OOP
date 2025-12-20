@@ -46,7 +46,6 @@ public class DatingConversationState implements GameState {
 
         choiceButtons = new ArrayList<>();
 
-        System.out.println("=== DatingConversationState Created ===");
         System.out.println("Active buttons before load: " + buttonManager.getActiveCount());
 
         loadConversationStage();

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.Gdx;
-import com.finpro.frontend.factories.SkinFactory;
+import com.finpro.frontend.factory.SkinFactory;
 
 public class DressingHouse {
     private Texture houseTexture;

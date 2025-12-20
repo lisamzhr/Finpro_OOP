@@ -23,6 +23,10 @@ public class Button {
         layout = new GlyphLayout();
     }
 
+    public Rectangle getBounds() {
+        return bounds;
+    }
+
     // Set dengan text
     public void set(String text, float x, float y, float width, float height, Texture texture) {
         this.text = text;

@@ -14,7 +14,6 @@ public class ButtonFactory {
         this.buttonPool = new ButtonPool();
     }
 
-    // ========== Regular Button Creation ==========
 
     // Create button dengan text
     public Button createButton(String text, float x, float y, float width, float height,
@@ -57,7 +56,6 @@ public class ButtonFactory {
         return button;
     }
 
-    // ========== Release Methods ==========
 
     public void releaseButton(Button button) {
         buttonPool.release(button);
@@ -66,8 +64,6 @@ public class ButtonFactory {
     public void releaseAll() {
         buttonPool.releaseAll();
     }
-
-    // ========== Info Methods ==========
 
     public int getActiveCount() {
         return buttonPool.getActiveCount();

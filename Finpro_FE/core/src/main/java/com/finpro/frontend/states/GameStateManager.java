@@ -1,11 +1,13 @@
 package com.finpro.frontend.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.finpro.frontend.models.Player;
 
 import java.util.Stack;
 
 public class GameStateManager {
     private final Stack<GameState> states;
+    private Player player;
 
     public GameStateManager() {
         this.states = new Stack<>();
@@ -19,6 +21,15 @@ public class GameStateManager {
             oldState.dispose();
         }
     }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
     public void set(GameState state){
         if (!states.isEmpty()) {
             GameState oldState = states.pop();
@@ -46,4 +57,5 @@ public class GameStateManager {
         }
         states.push(state);
     }
+
 }

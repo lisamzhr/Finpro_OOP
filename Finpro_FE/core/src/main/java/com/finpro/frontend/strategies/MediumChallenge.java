@@ -20,10 +20,11 @@ public class MediumChallenge implements ChallengeGame {
 
     private static final float SPAWN_INTERVAL = 0.8f;
     private static final float GAME_DURATION = 20.0f;
-    private static final int INGREDIENT_SIZE = 70;
+    private static final int INGREDIENT_SIZE = 300;
 
-    public MediumChallenge() {
-        objectManager = new ChallengeObjectManager();
+    // Constructor with Dependency Injection
+    public MediumChallenge(ChallengeObjectManager objectManager) {
+        this.objectManager = objectManager;
         ingredientTexture = new Texture("dating/brian_purple_flower.png");
         badIngredientTexture = new Texture("dating/brian_red_flower.png");
         random = new Random();
@@ -56,8 +57,7 @@ public class MediumChallenge implements ChallengeGame {
 
         objectManager.update(delta);
 
-        int pointsEarned = objectManager.checkClicked();
-        score += pointsEarned;
+        score += objectManager.checkClicked();
 
         if (gameTimer >= GAME_DURATION) {
             completed = true;
@@ -91,7 +91,7 @@ public class MediumChallenge implements ChallengeGame {
             Gdx.graphics.getWidth() - 200, Gdx.graphics.getHeight() - 50);
 
         font.getData().setScale(1f);
-        font.draw(batch, "Click GOOD ingredients! Avoid BAD ones!",
+        font.draw(batch, "Click PURPLE flowers! Avoid RED ones!",
             50, Gdx.graphics.getHeight() - 100);
 
         if (completed) {
@@ -99,6 +99,11 @@ public class MediumChallenge implements ChallengeGame {
             font.draw(batch, "Challenge Complete!",
                 Gdx.graphics.getWidth() / 2f - 150, Gdx.graphics.getHeight() / 2f);
         }
+    }
+
+    public void handleClick(float x, float y) {
+        if (completed) return;
+        objectManager.handleClick(x, y);
     }
 
     @Override
@@ -113,7 +118,7 @@ public class MediumChallenge implements ChallengeGame {
 
     @Override
     public void dispose() {
-        objectManager.dispose();
+        objectManager.clearAll();
         ingredientTexture.dispose();
         badIngredientTexture.dispose();
     }

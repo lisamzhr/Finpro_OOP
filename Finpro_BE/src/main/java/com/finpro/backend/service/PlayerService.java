@@ -31,4 +31,12 @@ public class PlayerService {
                 .filter(p -> p.getUsername().equals(username))
                 .orElse(null);
     }
+
+    public Player updateLevel(String username, int newLevel) {
+        Player player = playerRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        player.setLevel(newLevel);
+        return playerRepository.save(player);
+    }
 }
