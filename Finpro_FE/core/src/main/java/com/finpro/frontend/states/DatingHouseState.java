@@ -1,6 +1,7 @@
 package com.finpro.frontend.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -33,9 +34,13 @@ public class DatingHouseState implements GameState {
     private Texture brianProfileHover;
     private Texture chrisProfileHover;
 
-    public DatingHouseState(GameStateManager gsm, ButtonManager buttonManager) { // ✅ HAPUS player parameter
+    // ✅ NEW: Error message display
+    private String errorMessage = "";
+    private float errorMessageTimer = 0;
+
+    public DatingHouseState(GameStateManager gsm, ButtonManager buttonManager) {
         this.gsm = gsm;
-        this.player = gsm.getPlayer(); // ✅ Ambil player dari GSM
+        this.player = gsm.getPlayer();
         this.buttonManager = buttonManager;
 
         background = new Texture("dating/BackgroundDatingState.png");
@@ -86,10 +91,43 @@ public class DatingHouseState implements GameState {
 
         System.out.println("DatingHouse - Active buttons: " + buttonManager.getActiveCount());
 
-        // ✅ Debug: Check player
+        // Debug: Check player
         if (player != null) {
             System.out.println("DatingHouse - Player: " + player.getUsername() + " | Skin ID: " + player.getSelectedSkinId());
         }
+    }
+
+    // ✅ Helper methods for skin validation
+    private static boolean isSkinCompatible(String boyName, int skinId) {
+        switch (boyName) {
+            case "ALEX":
+                return skinId == 0 || skinId == 1; // Casual, Formal
+            case "BRIAN":
+                return skinId == 2 || skinId == 3; // Sport, Traditional
+            case "CHRIS":
+                return skinId == 4 || skinId == 5; // Modern, Elegant
+            default:
+                return false;
+        }
+    }
+
+    private static String getErrorMessage(String boyName) {
+        switch (boyName) {
+            case "ALEX":
+                return "Alex likes Casual or Formal style!";
+            case "BRIAN":
+                return "Brian prefers Sport or Traditional style!";
+            case "CHRIS":
+                return "Chris loves Modern or Elegant style!";
+            default:
+                return "Choose the right outfit!";
+        }
+    }
+
+    private void showError(String message) {
+        this.errorMessage = message;
+        this.errorMessageTimer = 3.0f; // Show for 3 seconds
+        System.out.println("Error: " + message);
     }
 
     @Override
@@ -99,15 +137,40 @@ public class DatingHouseState implements GameState {
         brianButton.update();
         chrisButton.update();
 
-        // ✅ Check button clicks - HAPUS player parameter
+        // ✅ Countdown error message timer
+        if (errorMessageTimer > 0) {
+            errorMessageTimer -= delta;
+            if (errorMessageTimer <= 0) {
+                errorMessage = "";
+            }
+        }
+
+        // ✅ Get player's current skin
+        int playerSkinId = player.getSelectedSkinId();
+
+        // ✅ Check button clicks with validation
         if (alexButton.isClicked()) {
-            gsm.push(new StoryState(gsm, new EasyDatingStrategy(), "ALEX", buttonManager));
+            if (isSkinCompatible("ALEX", playerSkinId)) {
+                gsm.push(new StoryState(gsm, new EasyDatingStrategy(), "ALEX", buttonManager));
+            } else {
+                showError(getErrorMessage("ALEX"));
+            }
         }
+
         if (brianButton.isClicked()) {
-            gsm.push(new StoryState(gsm, new MediumDatingStrategy(), "BRIAN", buttonManager));
+            if (isSkinCompatible("BRIAN", playerSkinId)) {
+                gsm.push(new StoryState(gsm, new MediumDatingStrategy(), "BRIAN", buttonManager));
+            } else {
+                showError(getErrorMessage("BRIAN"));
+            }
         }
+
         if (chrisButton.isClicked()) {
-            gsm.push(new StoryState(gsm, new HardDatingStrategy(), "CHRIS", buttonManager));
+            if (isSkinCompatible("CHRIS", playerSkinId)) {
+                gsm.push(new StoryState(gsm, new HardDatingStrategy(), "CHRIS", buttonManager));
+            } else {
+                showError(getErrorMessage("CHRIS"));
+            }
         }
     }
 
@@ -127,6 +190,17 @@ public class DatingHouseState implements GameState {
         alexButton.render(batch, font);
         brianButton.render(batch, font);
         chrisButton.render(batch, font);
+
+        // ✅ Render error message if exists
+        if (!errorMessage.isEmpty()) {
+            font.getData().setScale(1.5f);
+            font.setColor(Color.RED);
+            font.draw(batch, errorMessage,
+                Gdx.graphics.getWidth()/2 - 250,
+                150);
+            font.setColor(Color.WHITE);
+            font.getData().setScale(1f);
+        }
 
         batch.end();
     }

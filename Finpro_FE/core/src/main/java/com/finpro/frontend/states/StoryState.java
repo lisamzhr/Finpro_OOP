@@ -66,7 +66,6 @@ public class StoryState implements GameState {
         continueButton.update();
 
         if (continueButton.isClicked()) {
-            // ✅ Move to dating conversation state - HAPUS player parameter
             gsm.push(new DatingConversationState(gsm, strategy, boyId, buttonManager));
         }
     }
@@ -78,7 +77,6 @@ public class StoryState implements GameState {
         // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // ✅ Draw PLAYER with selected skin (kiri)
         float playerX = 50;
         float playerY = 50;
         float playerWidth = 250;
