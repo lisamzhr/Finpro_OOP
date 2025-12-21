@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
@@ -40,6 +41,7 @@ public class ResultState implements GameState {
         this.passed = strategy.isPass(totalPoints);
 
         backendService = new BackendService();
+        MusicManager.getInstance().playMusic(MusicManager.DATING_MUSIC);
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Chall.png");
         resultImage = new Texture(passed ? "dating/background.png" : "dating/background.png");

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
@@ -51,6 +52,7 @@ public class DatingConversationState implements GameState {
         textBox = new Texture("dating/textBox_" + boyId.toLowerCase() +".png");
         questionBox = new Texture("dating/decisionBox.png"); // ✅ Load texture
 
+        MusicManager.getInstance().playMusic(MusicManager.DATING_MUSIC);
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
         layout = new GlyphLayout();

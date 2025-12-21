@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.finpro.frontend.ButtonManager;
+import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.DressingHouse;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.models.SimpleButton;
@@ -35,6 +36,7 @@ public class DressingHouseState implements GameState {
 
         background = new Texture("bg/dressingroom.png");
         dressingHouse = new DressingHouse(0, 0);
+        MusicManager.getInstance().playMusic(MusicManager.DRESSING_MUSIC);
 
         saveBtn = new SimpleButton("SELECT", 260, 100, 200, 80);
 

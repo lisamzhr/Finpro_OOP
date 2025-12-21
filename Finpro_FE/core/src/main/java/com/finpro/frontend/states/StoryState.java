@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
+import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
@@ -35,6 +36,7 @@ public class StoryState implements GameState {
         this.boyId = boyId;
         this.buttonManager = buttonManager;
         textBox = new Texture("dating/textbox_"+ boyId.toLowerCase() + ".png");
+        MusicManager.getInstance().playMusic(MusicManager.DATING_MUSIC);
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Conv.png");
         boyImage = new Texture("dating/" + boyId.toLowerCase() + "_full.png");

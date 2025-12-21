@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.finpro.frontend.GameManager;
+import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
@@ -77,6 +78,7 @@ public class DatingHouseState implements GameState {
             buttonHoverTexture
         );
 
+        MusicManager.getInstance().playMusic(MusicManager.DATING_MUSIC);
         // Create boy buttons using ButtonManager
         float centerX = Gdx.graphics.getWidth() / 2f;
 
