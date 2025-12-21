@@ -36,6 +36,7 @@ dating/textBox_chris.png
 dressing/homeButton.png
 dressing/nextButton.png
 dressing/nextDress.png
+dressing/previousButton.png
 dressing/saveButton.png
 img.png
 libgdx.png
