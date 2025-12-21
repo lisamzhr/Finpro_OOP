@@ -43,6 +43,8 @@ libgdx.png
 menu/DatingHouse.png
 menu/DressingHouse.png
 menu/background.png
+menu/logo.png
+menu/startGameBG.png
 skins/casual.png
 skins/elegant.png
 skins/formal.png
