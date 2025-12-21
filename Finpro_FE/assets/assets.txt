@@ -1,4 +1,4 @@
-bg/dressingroom.jpeg
+bg/dressingroom.png
 button_hover.png
 button_normal.png
 dating/BackgroundDatingState.png
@@ -23,6 +23,14 @@ dating/chris_one_painting.png
 dating/chris_profile.png
 dating/chris_two_painting.png
 dating/datingGarden.png
+dating/decisionBox.png
+dating/textBox_alex.png
+dating/textBox_brian.png
+dating/textBox_chris.png
+dressing/homeButton.png
+dressing/nextButton.png
+dressing/previousButton.png
+dressing/saveButton.png
 img.png
 libgdx.png
 menu/DatingHouse.png
