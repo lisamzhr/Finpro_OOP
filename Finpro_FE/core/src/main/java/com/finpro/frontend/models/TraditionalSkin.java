@@ -1,8 +1,9 @@
+// models/TraditionalSkin.java
 package com.finpro.frontend.models;
 
 import com.badlogic.gdx.graphics.Texture;
 
-public class TraditionalSkin implements Skin{
+public class TraditionalSkin implements Skin {
     private Texture texture;
 
     public TraditionalSkin() {
@@ -22,6 +23,11 @@ public class TraditionalSkin implements Skin{
     @Override
     public int getSkinId() {
         return 3;
+    }
+
+    @Override
+    public int getPrice() {
+        return 3; // ✅ 3 COINS
     }
 
     @Override

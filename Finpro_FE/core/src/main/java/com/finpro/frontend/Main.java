@@ -13,7 +13,6 @@ public class Main extends ApplicationAdapter {
     private GameStateManager gsm;
     private ButtonManager buttonManager;
     private BitmapFont defaultFont;
-    // HAPUS INI: private GameManager gameManager;
 
     @Override
     public void create() {

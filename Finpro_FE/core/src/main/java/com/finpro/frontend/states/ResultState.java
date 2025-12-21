@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.finpro.frontend.models.Button;
+import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.services.BackendService;
@@ -12,6 +13,7 @@ import com.finpro.frontend.strategies.DatingStrategy;
 
 public class ResultState implements GameState {
     protected GameStateManager gsm;
+    private Player player;
     private Texture background;
     private Texture resultImage;
     private BitmapFont font;
@@ -28,8 +30,9 @@ public class ResultState implements GameState {
     private BackendService backendService;
 
     public ResultState(GameStateManager gsm, DatingStrategy strategy,
-                       String boyId, int totalPoints, ButtonManager buttonManager) {
+                       String boyId, int totalPoints, ButtonManager buttonManager) { // ✅ Hapus player parameter
         this.gsm = gsm;
+        this.player = gsm.getPlayer(); // ✅ Ambil player dari GSM
         this.strategy = strategy;
         this.boyId = boyId;
         this.totalPoints = totalPoints;
@@ -87,7 +90,15 @@ public class ResultState implements GameState {
     public void render(SpriteBatch batch) {
         batch.begin();
 
+        // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        // ✅ Draw PLAYER with selected skin (kiri bawah)
+        float playerX = 100;
+        float playerY = 100;
+        float playerWidth = 180;
+        float playerHeight = 360;
+        player.render(batch, playerX, playerY, playerWidth, playerHeight);
 
         // Draw result image
         batch.draw(resultImage,

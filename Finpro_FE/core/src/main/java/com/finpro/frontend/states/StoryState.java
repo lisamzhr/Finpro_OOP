@@ -6,12 +6,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.finpro.frontend.models.Button;
+import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.strategies.DatingStrategy;
 
 public class StoryState implements GameState {
     protected GameStateManager gsm;
+    private Player player;
     private Texture background;
     private Texture boyImage;
     private BitmapFont font;
@@ -23,13 +25,13 @@ public class StoryState implements GameState {
     private Texture buttonTexture;
     private Texture buttonHoverTexture;
     private GlyphLayout layout;
-    private Player player;
 
-    public StoryState(GameStateManager gsm, DatingStrategy strategy, String boyId, ButtonManager buttonManager) {
+    public StoryState(GameStateManager gsm, DatingStrategy strategy, String boyId, ButtonManager buttonManager) { // ✅ Hapus player parameter
+        this.gsm = gsm;
+        this.player = gsm.getPlayer(); // ✅ Ambil player dari GSM
         this.strategy = strategy;
         this.boyId = boyId;
         this.buttonManager = buttonManager;
-        this.gsm = gsm;
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Conv.png");
         boyImage = new Texture("dating/" + boyId.toLowerCase() + "_full.png");
@@ -39,7 +41,7 @@ public class StoryState implements GameState {
         // Get story from strategy
         storyText = strategy.getStory();
 
-        // Load button textures (adjust paths as needed)
+        // Load button textures
         buttonTexture = new Texture("button_normal.png");
         buttonHoverTexture = new Texture("button_hover.png");
 
@@ -53,6 +55,11 @@ public class StoryState implements GameState {
             buttonTexture,
             buttonHoverTexture
         );
+
+        // ✅ Debug: Check player
+        if (player != null) {
+            System.out.println("StoryState - Player: " + player.getUsername() + " | Skin ID: " + player.getSelectedSkinId());
+        }
     }
 
     @Override
@@ -60,7 +67,6 @@ public class StoryState implements GameState {
         continueButton.update();
 
         if (continueButton.isClicked()) {
-            // Move to dating conversation state
             gsm.push(new DatingConversationState(gsm, strategy, boyId, buttonManager));
         }
     }
@@ -72,8 +78,14 @@ public class StoryState implements GameState {
         // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Draw boy image
-        int boyPos = 800;
+        float playerX = 50;
+        float playerY = 50;
+        float playerWidth = 250;
+        float playerHeight = 500;
+        player.render(batch, playerX, playerY, playerWidth, playerHeight);
+
+        // Draw boy image (kanan)
+        int boyPos = 300;
         if (boyId.equals("ALEX")) {
             boyPos = 1100;
         }

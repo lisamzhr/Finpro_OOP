@@ -1,3 +1,4 @@
+// models/FormalSkin.java
 package com.finpro.frontend.models;
 
 import com.badlogic.gdx.graphics.Texture;
@@ -22,6 +23,11 @@ public class FormalSkin implements Skin {
     @Override
     public int getSkinId() {
         return 1;
+    }
+
+    @Override
+    public int getPrice() {
+        return 1; // ✅ 1 COIN
     }
 
     @Override

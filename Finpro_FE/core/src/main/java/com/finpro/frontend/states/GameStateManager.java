@@ -15,10 +15,16 @@ public class GameStateManager {
         this.states = new Stack<>();
         this.playerDataSaver = new PlayerDataSaver();
     }
-    public void push(GameState state){
+
+    public boolean hasPlayer() {
+        return player != null;
+    }
+
+    public void push(GameState state) {
         states.push(state);
     }
-    public void pop(){
+
+    public void pop() {
         if (!states.isEmpty()) {
             GameState oldState = states.pop();
             oldState.dispose();
@@ -47,12 +53,6 @@ public class GameStateManager {
         }
         states.push(state);
     }
-    public void update(float delta){
-        states.peek().update(delta);
-    }
-    public void render(SpriteBatch batch){
-        states.peek().render(batch);
-    }
     public void dispose() {
         if (player != null) {
             player.removeListener(playerDataSaver);
@@ -61,6 +61,7 @@ public class GameStateManager {
             GameState state = states.pop();
             state.dispose();
         }
+        player = null;
     }
 
     public void setState(GameState state) {
@@ -69,6 +70,17 @@ public class GameStateManager {
             oldState.dispose();
         }
         states.push(state);
+    }
+    public void update(float delta) {
+        if (!states.isEmpty()) {
+            states.peek().update(delta);
+        }
+    }
+
+    public void render(SpriteBatch batch) {
+        if (!states.isEmpty()) {
+            states.peek().render(batch);
+        }
     }
 
 }
