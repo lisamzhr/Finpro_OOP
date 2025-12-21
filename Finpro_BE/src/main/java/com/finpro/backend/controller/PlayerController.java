@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/player")
-@CrossOrigin(origins = "*") // Allow all origins (untuk testing)
+@CrossOrigin(origins = "*")
 public class PlayerController {
 
     @Autowired
@@ -31,9 +31,8 @@ public class PlayerController {
 
             Player p = playerService.register(username);
 
-            // Return Map dengan format yang jelas
             Map<String, String> response = new HashMap<>();
-            response.put("playerId", p.getPlayerId()); // Sudah String, tidak perlu toString()
+            response.put("playerId", p.getPlayerId());
             response.put("username", p.getUsername());
 
             System.out.println("Register success: " + response);
@@ -71,9 +70,8 @@ public class PlayerController {
                         .body(Map.of("error", "Username or Player ID invalid"));
             }
 
-            // Return Map dengan format yang jelas
             Map<String, String> response = new HashMap<>();
-            response.put("playerId", p.getPlayerId()); // Sudah String
+            response.put("playerId", p.getPlayerId());
             response.put("username", p.getUsername());
             response.put("level", String.valueOf(p.getLevel()));
 
@@ -89,7 +87,6 @@ public class PlayerController {
     }
     @PostMapping("/update-level")
     public ResponseEntity<?> updateLevel(@RequestBody Player request) {
-        // Logic update level
         Player player = playerService.updateLevel(request.getUsername(), request.getLevel());
         return ResponseEntity.ok(player);
     }
@@ -104,7 +101,6 @@ public class PlayerController {
         }
 
         Player player = playerService.updateFashionCoin(username, fashionCoinNum.floatValue());
-        //print ke console
         Map<String, String> response = new HashMap<>();
         response.put("playerId", player.getPlayerId());
         response.put("username", player.getUsername());
@@ -125,7 +121,6 @@ public class PlayerController {
         }
 
         Player player = playerService.updateSelectedSkin(username, selectedSkinId);
-        //print ke console
         Map<String, String> response = new HashMap<>();
         response.put("playerId", player.getPlayerId());
         response.put("username", player.getUsername());

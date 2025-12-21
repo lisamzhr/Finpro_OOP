@@ -10,7 +10,7 @@ public class Player {
 
     @Id
     @JsonProperty("playerId")
-    private String playerId; // Ubah dari UUID ke String
+    private String playerId;
 
     @JsonProperty("username")
     private String username;
@@ -27,7 +27,7 @@ public class Player {
     }
 
     public Player(String username) {
-        this.playerId = generateShortId(); // Generate ID sendiri
+        this.playerId = generateShortId();
         this.username = username;
         this.level = 1;
         this.fashionCoin = 5;

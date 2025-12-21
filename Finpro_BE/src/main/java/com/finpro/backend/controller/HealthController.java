@@ -43,14 +43,6 @@ public class HealthController {
 
         response.put("endpoints", endpoints);
 
-        // Features info
-        Map<String, String> features = new HashMap<>();
-        features.put("observer_pattern", "Auto-save player data on changes");
-        features.put("factory_pattern", "Skin creation system");
-        features.put("strategy_pattern", "Dating challenge strategies");
-
-        response.put("features", features);
-
         return response;
     }
 }

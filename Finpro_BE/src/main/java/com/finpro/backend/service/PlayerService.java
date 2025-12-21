@@ -16,7 +16,6 @@ public class PlayerService {
 
     //REGISTER
     public Player register(String username) {
-        // Cek apakah username sudah ada
         if (playerRepository.existsByUsername(username)) {
             throw new RuntimeException("Username already exists");
         }
@@ -32,6 +31,7 @@ public class PlayerService {
                 .orElse(null);
     }
 
+    // UPDATE Level
     public Player updateLevel(String username, int newLevel) {
         Player player = playerRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Player not found"));
