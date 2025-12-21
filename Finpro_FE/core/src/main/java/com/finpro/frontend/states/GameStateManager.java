@@ -2,15 +2,18 @@ package com.finpro.frontend.states;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.finpro.frontend.models.Player;
+import com.finpro.frontend.observers.PlayerDataSaver;
 
 import java.util.Stack;
 
 public class GameStateManager {
     private final Stack<GameState> states;
     private Player player;
+    private PlayerDataSaver playerDataSaver;
 
     public GameStateManager() {
         this.states = new Stack<>();
+        this.playerDataSaver = new PlayerDataSaver();
     }
     public void push(GameState state){
         states.push(state);
@@ -23,7 +26,14 @@ public class GameStateManager {
     }
 
     public void setPlayer(Player player) {
+        if (this.player != null) {
+            this.player.removeListener(playerDataSaver);
+        }
         this.player = player;
+        if (player != null) {
+            player.addListener(playerDataSaver);
+        }
+
     }
 
     public Player getPlayer() {
@@ -44,6 +54,9 @@ public class GameStateManager {
         states.peek().render(batch);
     }
     public void dispose() {
+        if (player != null) {
+            player.removeListener(playerDataSaver);
+        }
         while (!states.isEmpty()) {
             GameState state = states.pop();
             state.dispose();

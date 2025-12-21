@@ -11,7 +11,6 @@ public class Player {
     private String username;
     private int level;
     private float fashionCoin;
-    private float gameCoin;
     private int selectedSkinId = 0;
 
     // Observer list
@@ -22,7 +21,6 @@ public class Player {
         this.username = username;
         this.level = level;
         fashionCoin = 5;
-        gameCoin = 0;
     }
 
     //Observer Pattern
@@ -51,9 +49,6 @@ public class Player {
     public float getFashionCoin() {
         return fashionCoin;
     }
-    public float getGameCoin() {
-        return gameCoin;
-    }
 
     //Setter + notify
     public void setUsername(String username) {
@@ -69,13 +64,6 @@ public class Player {
         notifyListeners("COIN_CHANGED");
     }
 
-    public void addCoin(int coin){
-        gameCoin += coin;
-    }
-
-    public void setGameCoin(float gameCoin) {
-        this.gameCoin = gameCoin;
-    }
 
     // NEW: Skin management dengan Factory
     public void setSelectedSkinId(int skinId) {
