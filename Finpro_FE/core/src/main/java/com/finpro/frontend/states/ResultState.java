@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
@@ -49,6 +50,7 @@ public class ResultState implements GameState {
         layout = new GlyphLayout();
 
         backendService = new BackendService();
+        MusicManager.getInstance().playMusic(MusicManager.DATING_MUSIC);
 
         background = new Texture("dating/" + this.boyId + "_Background_Conv.png");
         resultImage = new Texture(passed ?

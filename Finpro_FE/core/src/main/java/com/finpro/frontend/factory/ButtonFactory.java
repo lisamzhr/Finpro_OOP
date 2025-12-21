@@ -47,6 +47,14 @@ public class ButtonFactory {
         return button;
     }
 
+    public Button createChoiceButtonWithTexture(String text, float x, float y,
+                                                float width, float height, int points,
+                                                Texture texture) {
+        Button button = buttonPool.obtain();
+        button.setWithPointsAndTexture(text, x, y, width, height, points, texture);
+        return button;
+    }
+
     // ========== Choice Button Creation (tanpa texture) ==========
 
     public Button createChoiceButton(String text, float x, float y,

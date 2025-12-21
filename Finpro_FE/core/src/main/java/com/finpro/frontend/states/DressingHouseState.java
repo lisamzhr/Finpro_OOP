@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.utils.Align;
 import com.finpro.frontend.ButtonManager;
+import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.models.DressingHouse;
 import com.finpro.frontend.models.Player;
@@ -53,6 +54,7 @@ public class DressingHouseState implements GameState {
         textBoxTexture = new Texture("dating/decisionBox.png"); // boleh polos
 
         dressingHouse = new DressingHouse(0, 0);
+        MusicManager.getInstance().playMusic(MusicManager.DRESSING_MUSIC);
 
         float sw = Gdx.graphics.getWidth();
         float sh = Gdx.graphics.getHeight();

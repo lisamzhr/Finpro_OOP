@@ -43,6 +43,9 @@ libgdx.png
 menu/DatingHouse.png
 menu/DressingHouse.png
 menu/background.png
+music/dating_music.mp3
+music/default_music.mp3
+music/dressing_music.mp3
 menu/logo.png
 menu/startGameBG.png
 skins/casual.png

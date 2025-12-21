@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.DatingHouse;
 import com.finpro.frontend.models.DressingHouse;
 import com.finpro.frontend.models.Player;
@@ -32,6 +33,7 @@ public class MenuState implements GameState {
         //this.player = new Player("puti", "jdu834", 1);
         this.buttonManager = buttonManager;
 
+        MusicManager.getInstance().playMusic(MusicManager.DEFAULT_MUSIC);
         font = new BitmapFont();
         font.getData().setScale(2f);
         font.setColor(Color.WHITE);
@@ -109,6 +111,7 @@ public class MenuState implements GameState {
             // Draw logo
             batch.draw(logoTexture, logoX, logoY, logoWidth, logoHeight);
             startGameButton.render(batch, font);
+
         } else {
             // View after login - Player info
             font.getData().setScale(1.5f);

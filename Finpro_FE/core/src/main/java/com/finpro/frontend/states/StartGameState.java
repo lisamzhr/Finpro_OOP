@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
+import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.ButtonManager;
@@ -53,6 +54,8 @@ public class StartGameState implements GameState {
 
         titleFont = new BitmapFont();
         titleFont.getData().setScale(2.5f);
+
+        MusicManager.getInstance().playMusic(MusicManager.DEFAULT_MUSIC);
 
         // Initialize ButtonManager
         this.buttonManager = buttonManager;
