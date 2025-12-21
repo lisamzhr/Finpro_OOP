@@ -34,7 +34,7 @@ public class StoryState implements GameState {
         this.strategy = strategy;
         this.boyId = boyId;
         this.buttonManager = buttonManager;
-        textBox = new Texture("white.png");
+        textBox = new Texture("dating/textbox_"+ boyId.toLowerCase() + ".png");
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Conv.png");
         boyImage = new Texture("dating/" + boyId.toLowerCase() + "_full.png");
@@ -81,21 +81,21 @@ public class StoryState implements GameState {
         // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        //draw player + boy
         float playerX = 50;
         float playerY = 50;
-        player.render(batch, playerX, playerY);
-
-        // Draw boy image (kanan)
         int boyPos = 300;
         if (boyId.equals("ALEX")) {
             boyPos = 1100;
+            playerX = 200;
         }
-        batch.draw(boyImage, boyPos, 0, boyImage.getWidth() / 2, boyImage.getHeight() / 2);
+        player.render(batch, playerX, playerY);
+        batch.draw(boyImage, boyPos, playerY, 500, 920);
 
         // Draw story text (wrap text)
-        font.getData().setScale(3f);
+        font.getData().setScale(2.5f);
         drawWrappedText(batch, font, textBox,
-            storyText, 150, 0, 900);
+            storyText, 150, 0, 1000);
         font.getData().setScale(1f);
 
         // Draw continue button
@@ -125,14 +125,14 @@ public class StoryState implements GameState {
         lines.add(line.toString().trim());
 
         // Hitung tinggi total box
-        float lineHeight = 40;
-        float padding = 20;
+        float lineHeight = 30;
+        float padding = 50;
         float boxHeight = (lines.size() * lineHeight) + (padding * 2);
         float boxWidth = maxWidth + (padding * 2);
 
         // Posisi box di tengah bawah
         float boxX = (Gdx.graphics.getWidth() - boxWidth) / 2f;
-        float boxY = 100; // Jarak dari bawah
+        float boxY = 200; // Jarak dari bawah
 
         // Draw background box
         batch.draw(background, boxX, boxY, boxWidth, boxHeight);

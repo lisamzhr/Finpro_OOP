@@ -12,16 +12,20 @@ import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.strategies.DatingStrategy;
 import java.util.ArrayList;
 import java.util.List;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 
 public class DatingConversationState implements GameState {
     protected GameStateManager gsm;
-    private Player player; // ✅ NEW: Player reference
+    private Player player;
     private Texture background;
     private Texture boyImage;
+    private Texture textBox;
+    private Texture questionBox;
     private BitmapFont font;
     private DatingStrategy strategy;
     private String boyId;
     private ButtonManager buttonManager;
+    private GlyphLayout layout;
 
     private int currentStage;
     private int totalPoints;
@@ -32,9 +36,9 @@ public class DatingConversationState implements GameState {
     private ShapeRenderer shapeRenderer;
 
     public DatingConversationState(GameStateManager gsm, DatingStrategy strategy,
-                                   String boyId, ButtonManager buttonManager) { // ✅ Tambah player parameter
+                                   String boyId, ButtonManager buttonManager) {
         this.gsm = gsm;
-        this.player = gsm.getPlayer(); // ✅ Store player
+        this.player = gsm.getPlayer();
         this.strategy = strategy;
         this.boyId = boyId;
         this.buttonManager = buttonManager;
@@ -44,8 +48,12 @@ public class DatingConversationState implements GameState {
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Conv.png");
         boyImage = new Texture("dating/" + boyId.toLowerCase() + "_full.png");
+        textBox = new Texture("dating/textBox_" + boyId.toLowerCase() +".png");
+        questionBox = new Texture("dating/decisionBox.png"); // ✅ Load texture
+
         font = new BitmapFont();
         shapeRenderer = new ShapeRenderer();
+        layout = new GlyphLayout();
 
         choiceButtons = new ArrayList<>();
 
@@ -68,21 +76,25 @@ public class DatingConversationState implements GameState {
         currentQuestion = strategy.getConversationQuestion(currentStage);
         String[][] choices = strategy.getConversationChoices(currentStage);
 
+        // ✅ NEW: Button dengan texture background
         float startY = 300;
-        float spacing = 80;
+        float spacing = 100;
+        float buttonWidth = 600;
+        float buttonHeight = 80;
 
         for (int i = 0; i < choices.length; i++) {
             String text = choices[i][0];
             int points = Integer.parseInt(choices[i][1]);
 
-            // Create choice button using ButtonManager
-            Button btn = buttonManager.createChoiceButton(
+            // ✅ Create choice button WITH texture
+            Button btn = buttonManager.createChoiceButtonWithTexture(
                 text,
-                Gdx.graphics.getWidth() / 2f - 300,
+                Gdx.graphics.getWidth() / 2f - buttonWidth/2,
                 startY - (i * spacing),
-                600,
-                60,
-                points
+                buttonWidth,
+                buttonHeight,
+                points,
+                questionBox // ✅ Pass texture
             );
 
             if (btn == null) {
@@ -132,10 +144,54 @@ public class DatingConversationState implements GameState {
 
                 System.out.println("Active buttons after cleanup: " + buttonManager.getActiveCount());
 
-                // Move to challenge state - pass player
-                gsm.push(new ChallengeState(gsm, strategy, boyId, totalPoints, buttonManager)); // ✅ Pass player
+                // Move to challenge state
+                gsm.push(new ChallengeState(gsm, strategy, boyId, totalPoints, buttonManager));
             }
         }
+    }
+
+    private void drawWrappedText(SpriteBatch batch, BitmapFont font, Texture background,
+                                 String text, float boxX, float boxY, float boxWidth, float boxHeight) {
+        // Draw background box
+        batch.draw(background, boxX, boxY, boxWidth, boxHeight);
+
+        // Text wrapping
+        String[] words = text.split(" ");
+        StringBuilder line = new StringBuilder();
+        List<String> lines = new ArrayList<>();
+        float maxWidth = boxWidth - 40; // Padding kiri-kanan
+
+        for (String word : words) {
+            String testLine = line + word + " ";
+            layout.setText(font, testLine);
+
+            if (layout.width > maxWidth) {
+                lines.add(line.toString().trim());
+                line = new StringBuilder(word + " ");
+            } else {
+                line.append(word).append(" ");
+            }
+        }
+        lines.add(line.toString().trim());
+
+        // Draw text (centered in box)
+        font.getData().setScale(2f);
+        font.setColor(0, 0, 0, 1); // Black text
+
+        float lineHeight = 30;
+        float totalTextHeight = lines.size() * lineHeight;
+        float textY = boxY + boxHeight/2 + totalTextHeight/2;
+
+        for (String textLine : lines) {
+            layout.setText(font, textLine);
+            float textX = boxX + (boxWidth - layout.width) / 2; // Center horizontally
+            font.draw(batch, textLine, textX, textY);
+            textY -= lineHeight;
+        }
+
+        // Reset color & scale
+        font.setColor(1, 1, 1, 1);
+        font.getData().setScale(1f);
     }
 
     @Override
@@ -145,9 +201,12 @@ public class DatingConversationState implements GameState {
         // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // ✅ Draw PLAYER with selected skin (kiri)
+        // Draw PLAYER with selected skin (kiri)
         float playerX = 50;
         float playerY = 50;
+        if(boyId.equals("ALEX")){
+            playerX = 270;
+        }
         player.render(batch, playerX, playerY);
 
         // Draw boy image (kanan)
@@ -157,49 +216,13 @@ public class DatingConversationState implements GameState {
         }
         batch.draw(boyImage, boyPos, 0, boyImage.getWidth()/2, boyImage.getHeight()/2);
 
-        batch.end();
+        // Draw question
+        float boxWidth = 750;
+        float boxHeight = 120;
+        float boxX = (Gdx.graphics.getWidth() - boxWidth) / 2;
+        float boxY = 550;
 
-        // Draw semi-transparent boxes
-        Gdx.gl.glEnable(GL20.GL_BLEND);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-
-        shapeRenderer.setProjectionMatrix(batch.getProjectionMatrix());
-
-        // Question box background
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, 0.7f);
-        shapeRenderer.rect(480, 650, 750, 80);
-        shapeRenderer.end();
-
-        // Stage counter background
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, 0.7f);
-        shapeRenderer.rect(30, Gdx.graphics.getHeight() - 50, 300, 40);
-        shapeRenderer.end();
-
-        // Points counter background
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(0, 0, 0, 0.7f);
-        shapeRenderer.rect(Gdx.graphics.getWidth() - 180, Gdx.graphics.getHeight() - 50, 160, 40);
-        shapeRenderer.end();
-
-        Gdx.gl.glDisable(GL20.GL_BLEND);
-
-        batch.begin();
-
-        // Draw question text
-        font.getData().setScale(2f);
-        font.setColor(1, 1, 1, 1);
-        font.draw(batch, currentQuestion, 500, 710);
-
-        // Draw stage counter
-        font.getData().setScale(1.2f);
-        font.draw(batch, "Stage: " + (currentStage + 1) + "/" + maxConversationStages,
-            50, Gdx.graphics.getHeight() - 20);
-
-        // Draw points
-        font.draw(batch, "Points: " + totalPoints,
-            Gdx.graphics.getWidth() - 160, Gdx.graphics.getHeight() - 20);
+        drawWrappedText(batch, font, textBox, currentQuestion, boxX, boxY, boxWidth, boxHeight);
 
         // Draw choice buttons
         for (Button btn : choiceButtons) {
@@ -216,6 +239,8 @@ public class DatingConversationState implements GameState {
 
         background.dispose();
         boyImage.dispose();
+        textBox.dispose();
+        questionBox.dispose(); // ✅ Dispose texture
         font.dispose();
         shapeRenderer.dispose();
 

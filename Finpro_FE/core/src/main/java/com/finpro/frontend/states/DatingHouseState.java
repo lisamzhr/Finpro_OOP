@@ -66,14 +66,13 @@ public class DatingHouseState implements GameState {
         chrisProfileHover = new Texture("dating/chris_profile.png");
 
         //back to menu
-        buttonTexture = new Texture("button_normal.png");
-        buttonHoverTexture = new Texture("button_hover.png");
-        backButton = buttonManager.createButton(
-            "Back to Menu",
-            Gdx.graphics.getWidth() / 2f - 100,
+        buttonTexture = new Texture("dressing/homeButton.png");
+        buttonHoverTexture = new Texture("dressing/homeButton.png");
+        backButton = buttonManager.createButtonNoText(
+            50,
             100,
-            200,
-            60,
+            buttonTexture.getWidth(),
+            buttonTexture.getHeight(),
             buttonTexture,
             buttonHoverTexture
         );
@@ -222,11 +221,6 @@ public class DatingHouseState implements GameState {
 
         // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        // Draw title
-        font.getData().setScale(2f);
-        font.draw(batch, "Choose Your Date", Gdx.graphics.getWidth()/2 - 150, Gdx.graphics.getHeight() - 50);
-        font.getData().setScale(1f);
 
         // Draw boy buttons
         alexButton.render(batch, font);

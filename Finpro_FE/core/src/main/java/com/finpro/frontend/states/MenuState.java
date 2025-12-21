@@ -102,6 +102,7 @@ public class MenuState implements GameState {
         if (player == null) {
             // Initial view: "Start Game" button
             startGameButton.render(batch, font);
+
         } else {
             // View after login - Player info
             font.getData().setScale(1.5f);

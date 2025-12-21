@@ -95,6 +95,6 @@ public class Player {
     }
 
     public void render(SpriteBatch batch, float x, float y) {
-        render(batch, x, y, getCurrentSkin().getTexture().getWidth()*0.65f, getCurrentSkin().getTexture().getHeight()*0.65f);
+        render(batch, x, y, 600, 850);
     }
 }

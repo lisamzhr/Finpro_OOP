@@ -5,12 +5,15 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.ButtonManager;
 import com.finpro.frontend.ChallengeObjectManager;
 import com.finpro.frontend.factory.ChallengeObjectFactory;
 import com.finpro.frontend.strategies.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChallengeState implements GameState {
     protected GameStateManager gsm;
@@ -30,10 +33,16 @@ public class ChallengeState implements GameState {
     private Texture buttonHoverTexture;
     private boolean showContinueButton;
 
+    // ✅ Add GlyphLayout for text wrapping
+    private GlyphLayout layout;
+
+    // ✅ Add texture for text background box
+    private Texture textBoxBackground;
+
     public ChallengeState(GameStateManager gsm, DatingStrategy datingStrategy,
-                          String boyId, int conversationPoints, ButtonManager buttonManager) { // ✅ Hapus player parameter
+                          String boyId, int conversationPoints, ButtonManager buttonManager) {
         this.gsm = gsm;
-        this.player = gsm.getPlayer(); // ✅ Ambil player dari GSM
+        this.player = gsm.getPlayer();
         this.datingStrategy = datingStrategy;
         this.boyId = boyId;
         this.conversationPoints = conversationPoints;
@@ -42,6 +51,9 @@ public class ChallengeState implements GameState {
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Chall.png");
         font = new BitmapFont();
+        layout = new GlyphLayout(); // ✅ Initialize layout
+
+        textBoxBackground = new Texture("dating/decisionBox.png");
 
         ChallengeObjectFactory factory = new ChallengeObjectFactory();
         challengeObjectManager = new ChallengeObjectManager(factory);
@@ -66,7 +78,6 @@ public class ChallengeState implements GameState {
 
         setupInputProcessor();
 
-        // ✅ Debug: Check player
         if (player != null) {
             System.out.println("ChallengeState - Player: " + player.getUsername() + " | Skin ID: " + player.getSelectedSkinId());
         }
@@ -76,12 +87,8 @@ public class ChallengeState implements GameState {
         Gdx.input.setInputProcessor(new InputAdapter() {
             @Override
             public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-                // Flip Y coordinate karena LibGDX coordinate system
                 float y = Gdx.graphics.getHeight() - screenY;
-
-                // Pass click ke challenge game
                 challengeGame.handleClick(screenX, y);
-
                 return true;
             }
         });
@@ -120,7 +127,6 @@ public class ChallengeState implements GameState {
                 System.out.println("Challenge Score: " + challengeScore);
                 System.out.println("Total Points: " + totalPoints);
 
-                // ✅ Pass to ResultState - HAPUS player parameter
                 gsm.push(new ResultState(gsm, datingStrategy, boyId, totalPoints, buttonManager));
             }
         }
@@ -133,18 +139,15 @@ public class ChallengeState implements GameState {
         // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // ✅ Draw PLAYER with selected skin (pojok kiri bawah, kecil)
-        float playerX = 30;
-        float playerY = 30;
-        float playerWidth = 120;
-        float playerHeight = 240;
-        player.render(batch, playerX, playerY, playerWidth, playerHeight);
+        // ✅ Draw title dengan text wrapping
+        float titleBoxWidth = 300;
+        float titleBoxHeight = 50;
+        float titleBoxX = Gdx.graphics.getWidth() / 2f - titleBoxWidth / 2;
+        float titleBoxY = Gdx.graphics.getHeight() - 100;
 
-        // Draw title
-        font.getData().setScale(2f);
-        font.draw(batch, "CHALLENGE TIME!",
-            Gdx.graphics.getWidth() / 2f - 150,
-            Gdx.graphics.getHeight() - 50);
+        drawWrappedText(batch, font, textBoxBackground,
+            "CHALLENGE TIME!",
+            titleBoxX, titleBoxY, titleBoxWidth, titleBoxHeight);
 
         // Draw challenge game
         challengeGame.render(batch, font);
@@ -157,13 +160,61 @@ public class ChallengeState implements GameState {
         batch.end();
     }
 
+    // ✅ Method untuk text wrapping
+    private void drawWrappedText(SpriteBatch batch, BitmapFont font, Texture background,
+                                 String text, float boxX, float boxY, float boxWidth, float boxHeight) {
+        // Draw background box
+        batch.draw(background, boxX, boxY, boxWidth, boxHeight);
+
+        // Text wrapping
+        String[] words = text.split(" ");
+        StringBuilder line = new StringBuilder();
+        List<String> lines = new ArrayList<>();
+        float maxWidth = boxWidth - 40; // Padding kiri-kanan
+
+        for (String word : words) {
+            String testLine = line + word + " ";
+            layout.setText(font, testLine);
+
+            if (layout.width > maxWidth) {
+                lines.add(line.toString().trim());
+                line = new StringBuilder(word + " ");
+            } else {
+                line.append(word).append(" ");
+            }
+        }
+        lines.add(line.toString().trim());
+
+        // Draw text (centered in box)
+        font.getData().setScale(2f);
+        font.setColor(0, 0, 0, 1); // Black text
+
+        float lineHeight = 30;
+        float totalTextHeight = lines.size() * lineHeight;
+        float textY = boxY + boxHeight/2 + totalTextHeight/2;
+
+        for (String textLine : lines) {
+            layout.setText(font, textLine);
+            float textX = boxX + (boxWidth - layout.width) / 2; // Center horizontally
+            font.draw(batch, textLine, textX, textY);
+            textY -= lineHeight;
+        }
+
+        // Reset color & scale
+        font.setColor(1, 1, 1, 1);
+        font.getData().setScale(1f);
+    }
+
     @Override
     public void dispose() {
-        // Clear input processor saat state di-dispose
         Gdx.input.setInputProcessor(null);
 
         background.dispose();
         font.dispose();
+
+        if (textBoxBackground != null) {
+            textBoxBackground.dispose();
+        }
 
         if (challengeGame != null) {
             challengeGame.dispose();

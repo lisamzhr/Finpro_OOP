@@ -33,7 +33,7 @@ public class DressingHouseState implements GameState {
         this.player = gsm.getPlayer();
         this.buttonManager = buttonManager;
 
-        background = new Texture("bg/dressingroom.jpeg");
+        background = new Texture("bg/dressingroom.png");
         dressingHouse = new DressingHouse(0, 0);
 
         saveBtn = new SimpleButton("SELECT", 260, 100, 200, 80);

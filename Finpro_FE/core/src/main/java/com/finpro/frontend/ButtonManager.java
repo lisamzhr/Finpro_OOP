@@ -44,6 +44,12 @@ public class ButtonManager {
         return factory.createChoiceButton(text, x, y, width, height, points);
     }
 
+    public Button createChoiceButtonWithTexture(String text, float x, float y,
+                                                float width, float height, int points,
+                                                Texture texture) {
+        return factory.createChoiceButtonWithTexture(text, x, y, width, height, points, texture);
+    }
+
     //Management
 
     public void releaseButton(Button button) {

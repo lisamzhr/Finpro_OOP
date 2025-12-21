@@ -56,6 +56,17 @@ public class Button {
         wasClicked = false;
     }
 
+    public void setWithPointsAndTexture(String text, float x, float y, float width, float height,
+                                        int points, Texture texture) {
+        this.text = text;
+        this.texture = texture;
+        this.hoverTexture = null;
+        this.points = points;
+        bounds.set(x, y, width, height);
+        isHovered = false;
+        wasClicked = false;
+    }
+
     // Set tanpa text (null)
     public void setNoText(float x, float y, float width, float height, Texture texture) {
         this.text = null;
@@ -100,9 +111,12 @@ public class Button {
         }
     }
 
+
+
     public void render(SpriteBatch batch, BitmapFont font) {
         // Kalau ada texture, draw texture
         if (texture != null) {
+            batch.setColor(1, 1, 1, 1);
             Texture currentTexture = (isHovered && hoverTexture != null) ? hoverTexture : texture;
             batch.draw(currentTexture, bounds.x, bounds.y, bounds.width, bounds.height);
         }
@@ -136,17 +150,77 @@ public class Button {
 
         // Draw text
         if (text != null && font != null) {
-            font.getData().setScale(1.2f);
-            layout.setText(font, text);
+            // ✅ Calculate optimal font scale berdasarkan text length
+            float maxScale = 2.0f;
+            float minScale = 1.2f;
+            float scale = maxScale;
 
-            // Center text kalau ada texture, left align kalau choice button
-            float textX = (texture != null)
-                ? bounds.x + (bounds.width - layout.width) / 2
-                : bounds.x + 20;
-            float textY = bounds.y + (bounds.height + layout.height) / 2;
+            float maxWidth = bounds.width - 40; // Padding kiri-kanan
+            float maxHeight = bounds.height - 20; // Padding atas-bawah
+
+            // ✅ Text wrapping dengan scale yang menyesuaikan
+            String[] words = text.split(" ");
+            java.util.List<String> lines = new java.util.ArrayList<>();
+
+            // Try different scales until text fits
+            boolean fits = false;
+            while (scale >= minScale && !fits) {
+                font.getData().setScale(scale);
+                lines.clear();
+
+                StringBuilder line = new StringBuilder();
+                for (String word : words) {
+                    String testLine = line.length() == 0 ? word : line + " " + word;
+                    layout.setText(font, testLine);
+
+                    if (layout.width > maxWidth) {
+                        if (line.length() > 0) {
+                            lines.add(line.toString());
+                            line = new StringBuilder(word);
+                        } else {
+                            // Single word too long, force break
+                            lines.add(word);
+                            line = new StringBuilder();
+                        }
+                    } else {
+                        line = new StringBuilder(testLine);
+                    }
+                }
+                if (line.length() > 0) {
+                    lines.add(line.toString());
+                }
+
+                // Check if total height fits
+                float lineHeight = layout.height + 5;
+                float totalHeight = lines.size() * lineHeight;
+
+                if (totalHeight <= maxHeight) {
+                    fits = true;
+                } else {
+                    scale -= 0.1f; // Reduce scale and try again
+                }
+            }
+
+            // ✅ Draw multi-line text centered
+            font.getData().setScale(scale);
+            float lineHeight = layout.height + 5;
+            float totalHeight = lines.size() * lineHeight;
+            float startY = bounds.y + (bounds.height + totalHeight) / 2;
 
             font.setColor(1, 1, 1, 1);
-            font.draw(batch, text, textX, textY);
+
+            for (int i = 0; i < lines.size(); i++) {
+                String textLine = lines.get(i);
+                layout.setText(font, textLine);
+
+                float textX = texture != null
+                    ? bounds.x + (bounds.width - layout.width) / 2
+                    : bounds.x + 20;
+                float textY = startY - (i * lineHeight);
+
+                font.draw(batch, textLine, textX, textY);
+            }
+
             font.getData().setScale(1f);
         }
     }
