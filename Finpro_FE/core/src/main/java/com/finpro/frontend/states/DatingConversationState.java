@@ -1,7 +1,6 @@
 package com.finpro.frontend.states;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -50,7 +49,7 @@ public class DatingConversationState implements GameState {
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Conv.png");
         boyImage = new Texture("dating/" + boyId.toLowerCase() + "_full.png");
         textBox = new Texture("dating/textBox_" + boyId.toLowerCase() +".png");
-        questionBox = new Texture("dating/decisionBox.png"); // ✅ Load texture
+        questionBox = new Texture("dating/decisionBox.png");
 
         MusicManager.getInstance().playMusic(MusicManager.DATING_MUSIC);
         font = new BitmapFont();
@@ -67,18 +66,14 @@ public class DatingConversationState implements GameState {
     }
 
     private void loadConversationStage() {
-        // Release previous buttons back to pool
         System.out.println("Loading stage " + currentStage + " - Releasing " + choiceButtons.size() + " old buttons");
         for (Button btn : choiceButtons) {
             buttonManager.releaseButton(btn);
         }
         choiceButtons.clear();
-
-        // Get question and choices from strategy
         currentQuestion = strategy.getConversationQuestion(currentStage);
         String[][] choices = strategy.getConversationChoices(currentStage);
 
-        // ✅ NEW: Button dengan texture background
         float startY = 300;
         float spacing = 100;
         float buttonWidth = 600;
@@ -88,7 +83,6 @@ public class DatingConversationState implements GameState {
             String text = choices[i][0];
             int points = Integer.parseInt(choices[i][1]);
 
-            // ✅ Create choice button WITH texture
             Button btn = buttonManager.createChoiceButtonWithTexture(
                 text,
                 Gdx.graphics.getWidth() / 2f - buttonWidth/2,
@@ -96,7 +90,7 @@ public class DatingConversationState implements GameState {
                 buttonWidth,
                 buttonHeight,
                 points,
-                questionBox // ✅ Pass texture
+                questionBox
             );
 
             if (btn == null) {
@@ -135,7 +129,6 @@ public class DatingConversationState implements GameState {
             if (currentStage < maxConversationStages) {
                 loadConversationStage();
             } else {
-                // CRITICAL FIX: Release buttons BEFORE pushing to next state
                 System.out.println("Conversation finished! Releasing buttons before challenge...");
                 System.out.println("Active buttons before cleanup: " + buttonManager.getActiveCount());
 
@@ -145,8 +138,6 @@ public class DatingConversationState implements GameState {
                 choiceButtons.clear();
 
                 System.out.println("Active buttons after cleanup: " + buttonManager.getActiveCount());
-
-                // Move to challenge state
                 gsm.push(new ChallengeState(gsm, strategy, boyId, totalPoints, buttonManager));
             }
         }
@@ -154,56 +145,100 @@ public class DatingConversationState implements GameState {
 
     private void drawWrappedText(SpriteBatch batch, BitmapFont font, Texture background,
                                  String text, float boxX, float boxY, float boxWidth, float boxHeight) {
-        // Draw background box
         batch.draw(background, boxX, boxY, boxWidth, boxHeight);
 
-        // Text wrapping
-        String[] words = text.split(" ");
-        StringBuilder line = new StringBuilder();
-        List<String> lines = new ArrayList<>();
-        float maxWidth = boxWidth - 40; // Padding kiri-kanan
-
-        for (String word : words) {
-            String testLine = line + word + " ";
-            layout.setText(font, testLine);
-
-            if (layout.width > maxWidth) {
-                lines.add(line.toString().trim());
-                line = new StringBuilder(word + " ");
-            } else {
-                line.append(word).append(" ");
-            }
+        if (text == null || text.isEmpty()) {
+            return;
         }
-        lines.add(line.toString().trim());
 
-        // Draw text (centered in box)
-        font.getData().setScale(2f);
-        font.setColor(0, 0, 0, 1); // Black text
+        float maxScale = 2f;
+        float minScale = 0.8f;
+        float currentScale = maxScale;
+        float scaleStep = 0.2f;
 
-        float lineHeight = 30;
-        float totalTextHeight = lines.size() * lineHeight;
-        float textY = boxY + boxHeight/2 + totalTextHeight/2;
+        float horizontalPadding = 40;
+        float verticalPadding = 35;
 
-        for (String textLine : lines) {
+        List<String> bestFitLines = null;
+        float bestScale = minScale;
+
+        while (currentScale >= minScale) {
+            font.getData().setScale(currentScale);
+
+            List<String> lines = wrapText(font, text, boxWidth - horizontalPadding);
+            layout.setText(font, "A");
+            float lineHeight = layout.height;
+            float totalTextHeight = lines.size() * lineHeight;
+            if (totalTextHeight <= (boxHeight - verticalPadding)) {
+                bestFitLines = lines;
+                bestScale = currentScale;
+                break;
+            }
+
+            currentScale -= scaleStep;
+        }
+
+        if (bestFitLines == null) {
+            font.getData().setScale(minScale);
+            bestFitLines = wrapText(font, text, boxWidth - horizontalPadding);
+            bestScale = minScale;
+        }
+        font.getData().setScale(bestScale);
+        font.setColor(0, 0, 0, 1);
+
+        layout.setText(font, "A");
+        float lineHeight = layout.height + 5;
+        float totalTextHeight = bestFitLines.size() * lineHeight;
+        float textY = boxY + (boxHeight + totalTextHeight) / 2;
+
+        for (String textLine : bestFitLines) {
             layout.setText(font, textLine);
             float textX = boxX + (boxWidth - layout.width) / 2; // Center horizontally
             font.draw(batch, textLine, textX, textY);
             textY -= lineHeight;
         }
 
-        // Reset color & scale
         font.setColor(1, 1, 1, 1);
         font.getData().setScale(1f);
+    }
+
+    // Helper method: wrap text berdasarkan width
+    private List<String> wrapText(BitmapFont font, String text, float maxWidth) {
+        String[] words = text.split(" ");
+        StringBuilder line = new StringBuilder();
+        List<String> lines = new ArrayList<>();
+
+        for (String word : words) {
+            String testLine = line.length() == 0 ? word : line + " " + word;
+            layout.setText(font, testLine);
+
+            if (layout.width > maxWidth) {
+                if (line.length() > 0) {
+                    lines.add(line.toString().trim());
+                    line = new StringBuilder(word);
+                } else {
+                    // Single word too long, force add
+                    lines.add(word);
+                    line = new StringBuilder();
+                }
+            } else {
+                line = new StringBuilder(testLine);
+            }
+        }
+
+        if (line.length() > 0) {
+            lines.add(line.toString().trim());
+        }
+
+        return lines;
     }
 
     @Override
     public void render(SpriteBatch batch) {
         batch.begin();
 
-        // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Draw PLAYER with selected skin (kiri)
         float playerX = 50;
         float playerY = 50;
         if(boyId.equals("ALEX")){
@@ -211,14 +246,12 @@ public class DatingConversationState implements GameState {
         }
         player.render(batch, playerX, playerY);
 
-        // Draw boy image (kanan)
         int boyPos = 300;
         if (boyId.equals("ALEX")) {
             boyPos = 1100;
         }
         batch.draw(boyImage, boyPos, 0, boyImage.getWidth()/2, boyImage.getHeight()/2);
 
-        // Draw question
         float boxWidth = 750;
         float boxHeight = 120;
         float boxX = (Gdx.graphics.getWidth() - boxWidth) / 2;
@@ -226,7 +259,6 @@ public class DatingConversationState implements GameState {
 
         drawWrappedText(batch, font, textBox, currentQuestion, boxX, boxY, boxWidth, boxHeight);
 
-        // Draw choice buttons
         for (Button btn : choiceButtons) {
             btn.render(batch, font);
         }
@@ -242,11 +274,10 @@ public class DatingConversationState implements GameState {
         background.dispose();
         boyImage.dispose();
         textBox.dispose();
-        questionBox.dispose(); // ✅ Dispose texture
+        questionBox.dispose();
         font.dispose();
         shapeRenderer.dispose();
 
-        // Release all buttons back to pool
         for (Button btn : choiceButtons) {
             buttonManager.releaseButton(btn);
         }

@@ -27,7 +27,7 @@ public class ElegantSkin implements Skin {
 
     @Override
     public int getPrice() {
-        return 5; // ✅ 5 COINS
+        return 5; // 5 coin
     }
 
     @Override

@@ -8,14 +8,14 @@ public class MediumDatingStrategy implements DatingStrategy {
     public int challengeStage() { return 1; }
 
     @Override
-    public boolean isPass(int totalPoints) { return totalPoints >= 25; } // ✅ Lebih challenging
+    public boolean isPass(int totalPoints) { return totalPoints >= 25; }
 
     @Override
     public String getFinalMessage(int totalPoints) {
-        if (totalPoints >= 32) {
-            return "Brian: You're amazing! Dinner date next? My treat! 🏀💕";
+        if (totalPoints >= 25) {
+            return "Brian: You're amazing! Dinner date next? My treat!";
         } else if (totalPoints >= 25) {
-            return "Brian: That was fun! Let's hang out again sometime! 😊";
+            return "Brian: That was fun! Let's hang out again sometime!";
         } else {
             return "Brian: It was nice meeting you, but I don't think we clicked...";
         }
@@ -43,24 +43,24 @@ public class MediumDatingStrategy implements DatingStrategy {
     public String[][] getConversationChoices(int stage) {
         switch(stage) {
             case 0: return new String[][] {
-                {"Business or Economics - I'm into finance and entrepreneurship!", "5"},
-                {"Tech or Engineering - innovation is the future", "3"},
+                {"Business or Economics - I'm into finance and entrepreneurship!", "4"},
+                {"Tech or Engineering - innovation is the future", "6"},
                 {"Arts or Social Sciences - creativity and humanity matter", "2"}
             };
             case 1: return new String[][] {
-                {"Hit the gym, morning runs, or play sports with friends", "5"},
+                {"Hit the gym, morning runs, or play sports with friends", "3"},
                 {"Balance between active and chill, gym in the morning, hangout at night", "3"},
-                {"Netflix marathon and sleep in. I need my rest!", "2"}
+                {"Netflix marathon and sleep in. I need my rest!", "7"}
             };
             case 2: return new String[][] {
                 {"Yes! I love watching DBL, the energy and skills are insane!", "5"},
-                {"I've heard about it! Never watched live but sounds exciting", "3"},
+                {"I've heard about it! Never watched live but sounds exciting", "7"},
                 {"Not really into basketball... more of a badminton person", "2"}
             };
             case 3: return new String[][] {
                 {"Sports venues, gyms, courts - anywhere I can stay active!", "5"},
                 {"Coffee shops or malls - good for hanging out and people watching", "3"},
-                {"Usually just at home, I'm a homebody honestly", "2"}
+                {"Usually just at home, I'm a homebody honestly", "7"}
             };
             default: return new String[][]{};
         }

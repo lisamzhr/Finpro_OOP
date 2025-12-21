@@ -19,9 +19,9 @@ public class EasyDatingStrategy implements DatingStrategy {
     @Override
     public String getFinalMessage(int totalPoints) {
         if (totalPoints >= 20) {
-            return "Alex: I really like you! Let's meet again! 💖";
+            return "Alex: I really like you! Let's meet again!";
         } else if (totalPoints >= 15) {
-            return "Alex: That was fun! See you around! 😊";
+            return "Alex: That was fun! See you around!";
         } else {
             return "Alex: Maybe we should just be friends...";
         }

@@ -12,7 +12,6 @@ import com.finpro.frontend.MusicManager;
 import com.finpro.frontend.models.Player;
 import com.finpro.frontend.models.Button;
 import com.finpro.frontend.ButtonManager;
-import com.finpro.frontend.factory.ButtonFactory;
 import com.finpro.frontend.services.BackendService;
 
 public class StartGameState implements GameState {
@@ -34,7 +33,7 @@ public class StartGameState implements GameState {
     private Texture startGameBGTexture;
 
     private boolean loading = false;
-    private String screenMode = "menu"; // "menu", "register_input", "register_success", "login_username", "login_playerid"
+    private String screenMode = "menu";
     private String inputText = "";
     private String tempUsername = "";
     private String createdPlayerId = "";
@@ -57,14 +56,11 @@ public class StartGameState implements GameState {
 
         MusicManager.getInstance().playMusic(MusicManager.DEFAULT_MUSIC);
 
-        // Initialize ButtonManager
         this.buttonManager = buttonManager;
 
-        // Load button textures
         buttonTexture = new Texture("button_normal.png");
         buttonHoverTexture = new Texture("button_hover.png");
 
-        // Load backgorund
         startGameBGTexture = new Texture("menu/startGameBG.png");
 
         float buttonWidth = 200;
@@ -72,7 +68,6 @@ public class StartGameState implements GameState {
         float centerX = Gdx.graphics.getWidth() / 2f - buttonWidth / 2f;
         float centerY = Gdx.graphics.getHeight() / 2f;
 
-        // Create buttons using ButtonManager
         registerButton = buttonManager.createButton(
             "REGISTER",
             centerX,
@@ -182,7 +177,7 @@ public class StartGameState implements GameState {
                     Gdx.app.postRunnable(() -> {
                         loading = false;
                         inputText = "";
-                        screenMode = "menu"; // Kembali ke menu jika error
+                        screenMode = "menu";
                     });
                 }
             });
@@ -244,7 +239,6 @@ public class StartGameState implements GameState {
         batch.draw(startGameBGTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         batch.end();
 
-        // Draw shapes (backgrounds, input boxes, borders)
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
         if (screenMode.equals("register_input") || screenMode.equals("login_username") || screenMode.equals("login_playerid")) {
@@ -327,11 +321,9 @@ public class StartGameState implements GameState {
         float boxX = Gdx.graphics.getWidth()/2f - boxWidth/2f;
         float boxY = Gdx.graphics.getHeight()/2f - boxHeight/2f;
 
-        // Background box
         shapeRenderer.setColor(INPUT_BG);
         shapeRenderer.rect(boxX, boxY, boxWidth, boxHeight);
 
-        // Border
         shapeRenderer.setColor(PINK);
         shapeRenderer.rectLine(boxX, boxY, boxX + boxWidth, boxY, 6);
         shapeRenderer.rectLine(boxX, boxY + boxHeight, boxX + boxWidth, boxY + boxHeight, 4);
@@ -348,27 +340,22 @@ public class StartGameState implements GameState {
         float paddingTop = 40;
         float yStart = boxY + boxHeight - paddingTop;
 
-        // SUCCESS title
         titleFont.setColor(PINK);
         titleFont.draw(batch, "SUCCESS!", boxX + 40, yStart);
 
-        // Subtitle
         font.setColor(DARK_PINK);
         font.getData().setScale(1.3f);
         font.draw(batch, "Your account has been created!", boxX + 40, yStart - 50);
 
-        // Username line
         font.getData().setScale(1.5f);
         font.setColor(Color.BLACK);
         font.draw(batch, "Username: " + tempUsername, boxX + 40, yStart - 110);
 
-        // Player ID
         font.setColor(PINK);
         font.getData().setScale(2f);
         font.draw(batch, "ID: " + createdPlayerId, boxX + 40, yStart - 170);
         font.getData().setScale(1.5f);
 
-        // Warning text
         font.setColor(Color.RED);
         font.getData().setScale(1.1f);
         font.draw(batch, "SAVE THIS ID! You need it to login.", boxX + 40, yStart - 220);
@@ -472,7 +459,6 @@ public class StartGameState implements GameState {
             startGameBGTexture.dispose();
         }
 
-        // Release buttons back to pool
         if (registerButton != null) {
             buttonManager.releaseButton(registerButton);
         }
@@ -491,19 +477,16 @@ public class StartGameState implements GameState {
             if (start == -1) return "";
             start += search.length();
 
-            // Skip whitespace
             while (start < json.length() && json.charAt(start) == ' ') {
                 start++;
             }
 
-            // String value
             if (json.charAt(start) == '\"') {
                 start++;
                 int end = json.indexOf("\"", start);
                 return json.substring(start, end);
             }
 
-            // Number value
             int end = start;
             while (end < json.length() &&
                 (Character.isDigit(json.charAt(end)) || json.charAt(end) == '-')) {

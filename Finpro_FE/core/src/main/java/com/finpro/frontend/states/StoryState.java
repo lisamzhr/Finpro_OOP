@@ -43,14 +43,11 @@ public class StoryState implements GameState {
         font = new BitmapFont();
         layout = new GlyphLayout();
 
-        // Get story from strategy
         storyText = strategy.getStory();
 
-        // Load button textures
         buttonTexture = new Texture("button_normal.png");
         buttonHoverTexture = new Texture("button_hover.png");
 
-        // Create continue button using ButtonManager
         continueButton = buttonManager.createButton(
             "Continue",
             Gdx.graphics.getWidth() / 2f - 100,
@@ -61,7 +58,6 @@ public class StoryState implements GameState {
             buttonHoverTexture
         );
 
-        // ✅ Debug: Check player
         if (player != null) {
             System.out.println("StoryState - Player: " + player.getUsername() + " | Skin ID: " + player.getSelectedSkinId());
         }
@@ -80,10 +76,8 @@ public class StoryState implements GameState {
     public void render(SpriteBatch batch) {
         batch.begin();
 
-        // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        //draw player + boy
         float playerX = 50;
         float playerY = 50;
         int boyPos = 300;
@@ -94,13 +88,9 @@ public class StoryState implements GameState {
         player.render(batch, playerX, playerY);
         batch.draw(boyImage, boyPos, playerY, 500, 920);
 
-        // Draw story text (wrap text)
-        font.getData().setScale(2.5f);
-        drawWrappedText(batch, font, textBox,
-            storyText, 150, 0, 1000);
+        font.getData().setScale(2f);
+        drawWrappedText(batch, font, textBox, storyText, 150, 0, 1000);
         font.getData().setScale(1f);
-
-        // Draw continue button
         continueButton.render(batch, font);
 
         batch.end();
@@ -108,7 +98,6 @@ public class StoryState implements GameState {
 
     private void drawWrappedText(SpriteBatch batch, BitmapFont font, Texture background,
                                  String text, float x, float y, float maxWidth) {
-        // Hitung jumlah baris yang dibutuhkan
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         java.util.List<String> lines = new java.util.ArrayList<>();
@@ -126,22 +115,18 @@ public class StoryState implements GameState {
         }
         lines.add(line.toString().trim());
 
-        // Hitung tinggi total box
-        float lineHeight = 30;
-        float padding = 50;
+        float lineHeight = 35;
+        float padding = 35;
         float boxHeight = (lines.size() * lineHeight) + (padding * 2);
         float boxWidth = maxWidth + (padding * 2);
 
-        // Posisi box di tengah bawah
         float boxX = (Gdx.graphics.getWidth() - boxWidth) / 2f;
-        float boxY = 200; // Jarak dari bawah
+        float boxY = 200;
 
-        // Draw background box
         batch.draw(background, boxX, boxY, boxWidth, boxHeight);
 
-        // Draw text (dari atas ke bawah)
         font.setColor(Color.BLACK);
-        float textY = boxY + boxHeight - padding - 10;
+        float textY = boxY + boxHeight - padding-20;
 
         for (String textLine : lines) {
             layout.setText(font, textLine);
@@ -160,7 +145,6 @@ public class StoryState implements GameState {
         buttonHoverTexture.dispose();
         layout = null;
 
-        // Release button back to pool
         if (continueButton != null) {
             buttonManager.releaseButton(continueButton);
             continueButton = null;

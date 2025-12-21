@@ -59,14 +59,11 @@ public class ResultState implements GameState {
         );
         font = new BitmapFont();
 
-        // Get final message from strategy
         resultMessage = strategy.getFinalMessage(totalPoints);
 
-        // Load button textures
         buttonTexture = new Texture("button_normal.png");
         buttonHoverTexture = new Texture("button_hover.png");
 
-        // Create back button using ButtonManager
         backButton = buttonManager.createButton(
             "Back to House",
             Gdx.graphics.getWidth() / 2f - 100,
@@ -77,7 +74,6 @@ public class ResultState implements GameState {
             buttonHoverTexture
         );
 
-        // Update level if passed
         if (passed) {
             Player player = gsm.getPlayer();
             if(player != null){
@@ -91,23 +87,18 @@ public class ResultState implements GameState {
         backButton.update();
 
         if (backButton.isClicked()) {
-            // Pop multiple states to go back to DatingHouseState
             gsm.pop(); // ResultState
             gsm.pop(); // ChallengeState
             gsm.pop(); // DatingConversationState
             gsm.pop(); // StoryState
-            // Now back at DatingHouseState
         }
     }
 
     @Override
     public void render(SpriteBatch batch) {
         batch.begin();
-
-        // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // Draw result image
         float maxWidth = 500f;
         float maxHeight = 350f;
 
@@ -124,7 +115,6 @@ public class ResultState implements GameState {
 
         batch.draw(resultImage, x, y, drawW, drawH);
 
-        // Draw result text title (SUCCESS/FAILED) with box
         font.getData().setScale(2.5f);
         font.setColor(Color.WHITE);
         String title = passed ? "SUCCESS!" : "FAILED...";
@@ -141,8 +131,6 @@ public class ResultState implements GameState {
         font.draw(batch, title,
             (Gdx.graphics.getWidth() - layout.width) / 2f,
             titleY);
-
-        // Draw total points with box
         font.getData().setScale(1.5f);
         String pointsText = "Total Points: " + totalPoints;
         layout.setText(font, pointsText);
@@ -159,12 +147,9 @@ public class ResultState implements GameState {
             (Gdx.graphics.getWidth() - layout.width) / 2f,
             pointsY);
 
-        // === DIALOG TEXT WITH WRAPPED BOX ===
         float textMaxWidth = 850;
         float padding = 30;
         float lineHeight = 35;
-
-        // Calculate wrapped text
         font.getData().setScale(1.2f);
         font.setColor(Color.WHITE);
 
@@ -185,7 +170,6 @@ public class ResultState implements GameState {
         }
         lines.add(line.toString().trim());
 
-        // Calculate actual box width based on longest line
         float maxLineWidth = 0;
         for (String textLine : lines) {
             layout.setText(font, textLine);
@@ -194,17 +178,13 @@ public class ResultState implements GameState {
             }
         }
 
-        // Calculate box dimensions
         float boxHeight = (lines.size() * lineHeight) + (padding * 2) + 10;
         float boxWidth = maxLineWidth + (padding * 2);
 
         float boxX = (Gdx.graphics.getWidth() - boxWidth) / 2f;
-        float boxY = 200; // Naikkan posisi agar tidak nabrak button
+        float boxY = 200;
 
-        // Draw text box FIRST (behind text)
         batch.draw(textBox, boxX, boxY, boxWidth, boxHeight);
-
-        // Draw wrapped text AFTER box (in front)
         float textY = boxY + boxHeight - padding - 15;
         for (String textLine : lines) {
             layout.setText(font, textLine);
@@ -213,11 +193,9 @@ public class ResultState implements GameState {
             textY -= lineHeight;
         }
 
-        // Reset font
         font.getData().setScale(1f);
         font.setColor(Color.WHITE);
 
-        // Draw button
         backButton.render(batch, font);
 
         batch.end();
@@ -229,16 +207,12 @@ public class ResultState implements GameState {
         resultImage.dispose();
         font.dispose();
         textBox.dispose();
-
-        // Dispose textures
         if (buttonTexture != null) {
             buttonTexture.dispose();
         }
         if (buttonHoverTexture != null) {
             buttonHoverTexture.dispose();
         }
-
-        // Release button back to pool
         if (backButton != null) {
             buttonManager.releaseButton(backButton);
             backButton = null;

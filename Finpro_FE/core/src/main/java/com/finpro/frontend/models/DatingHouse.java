@@ -16,13 +16,11 @@ public class DatingHouse {
     private float x, y;
     private float width, height;
     private boolean isHovered;
-    private GameManager gameManager;
-    private ButtonManager buttonManager;
+
 
     public DatingHouse(float x, float y, ButtonManager buttonManager) {
         this.x = x;
         this.y = y;
-        this.buttonManager = buttonManager;
 
         houseTexture = new Texture("menu/DatingHouse.png");
         float scale = 0.9f;
@@ -30,13 +28,10 @@ public class DatingHouse {
         this.height = houseTexture.getHeight() * scale;
         bounds = new Rectangle(x, y, width, height);
         isHovered = false;
-
-        // GET GAME MANAGER INSTANCE
-        gameManager = GameManager.getInstance();
     }
 
     public void render(SpriteBatch batch) {
-        batch.draw(houseTexture, x, y, width, height);
+        batch.draw(houseTexture, x, y, width/2, height/2);
     }
 
     public void update() {
@@ -62,7 +57,6 @@ public class DatingHouse {
         houseTexture.dispose();
     }
 
-    // Getters
     public float getX() {
         return x;
     }

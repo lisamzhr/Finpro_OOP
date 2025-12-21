@@ -27,7 +27,7 @@ public class FormalSkin implements Skin {
 
     @Override
     public int getPrice() {
-        return 1; // ✅ 1 COIN
+        return 1; // 1 koin
     }
 
     @Override

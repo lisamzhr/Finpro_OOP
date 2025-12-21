@@ -12,10 +12,10 @@ public class HardDatingStrategy implements DatingStrategy{
 
     @Override
     public String getFinalMessage(int totalPoints) {
-        if (totalPoints >= 25) {
-            return "Chris: You're my perfect muse... Let me write poetry about you! 🎨❤️";
+        if (totalPoints >= 30) {
+            return "Chris: You're my perfect muse... Let me write poetry about you! ";
         } else if (totalPoints >= 22) {
-            return "Chris: You have a beautiful soul. I'd love to see you again 😊";
+            return "Chris: You have a beautiful soul. I'd love to see you again ";
         } else {
             return "Chris: We see the world differently... But that's okay.";
         }
@@ -44,19 +44,19 @@ public class HardDatingStrategy implements DatingStrategy{
     public String[][] getConversationChoices(int stage) {
         switch(stage) {
             case 0: return new String[][] {
-                {"I see emotions, stories, and the artist's soul expressed freely", "5"},
-                {"It's about interpretation, everyone sees something different", "3"},
-                {"Honestly? Just random colors and shapes to me", "2"}
+                {"I see emotions, stories, and the artist's soul expressed freely", "2"},
+                {"It's about interpretation, everyone sees something different", "8"},
+                {"Honestly? Just random colors and shapes to me", "5"}
             };
             case 1: return new String[][] {
-                {"I balance logic with creativity too, both are important", "5"},
-                {"I focus on one thing at a time, easier that way", "3"},
+                {"I balance logic with creativity too, both are important", "8"},
+                {"I focus on one thing at a time, easier that way", "5"},
                 {"I just go with the flow, no specific balance", "2"}
             };
             case 2: return new String[][] {
-                {"Capture the spark in my eyes when I'm passionate about something", "5"},
-                {"Something peaceful and content, I guess", "3"},
-                {"I don't know... whatever you want?", "2"}
+                {"Capture the spark in my eyes when I'm passionate about something", "4"},
+                {"Something peaceful and content, I guess", "2"},
+                {"I don't know... whatever you want?", "8"}
             };
             default: return new String[][]{};
         }

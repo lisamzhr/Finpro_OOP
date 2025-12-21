@@ -27,7 +27,7 @@ public class TraditionalSkin implements Skin {
 
     @Override
     public int getPrice() {
-        return 3; // ✅ 3 COINS
+        return 3; // 3 coin
     }
 
     @Override

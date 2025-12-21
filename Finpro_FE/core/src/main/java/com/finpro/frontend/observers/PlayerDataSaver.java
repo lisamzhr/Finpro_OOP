@@ -14,7 +14,6 @@ public class PlayerDataSaver implements PlayerListener {
 
     @Override
     public void onPlayerUpdated(Player player, String eventType) {
-        // Prevent concurrent saves
         if (isSaving) {
             System.out.println("Save already in progress, skipping: " + eventType);
             return;

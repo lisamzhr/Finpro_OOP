@@ -37,7 +37,7 @@ public class DressingHouse {
 
     public void render(SpriteBatch batch) {
         // Draw house texture (untuk menu screen)
-        batch.draw(houseTexture, x, y, width, height);
+        batch.draw(houseTexture, x, y, width/1.7f, height/1.7f);
 
         // Optional: highlight saat hover
         if (isHovered) {

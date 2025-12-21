@@ -80,15 +80,12 @@ public class Player {
         return SkinFactory.createSkin(selectedSkinId);
     }
 
-    // ✅ Check if player has enough coins for a skin
     public boolean canAffordSkin(int skinId) {
         Skin skin = SkinFactory.createSkin(skinId);
         boolean canAfford = fashionCoin >= skin.getPrice();
         skin.dispose();
         return canAfford;
     }
-
-    // Render method
     public void render(SpriteBatch batch, float x, float y, float width, float height) {
         Skin currentSkin = getCurrentSkin();
         batch.draw(currentSkin.getTexture(), x, y, width, height);

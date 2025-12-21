@@ -27,7 +27,7 @@ public class SportSkin implements Skin {
 
     @Override
     public int getPrice() {
-        return 2; // ✅ 2 COINS
+        return 2; // 2 coin
     }
 
     @Override

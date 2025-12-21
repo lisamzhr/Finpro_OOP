@@ -48,14 +48,10 @@ public class ChallengeObject {
 
     public void update(float delta) {
         if (!isActive) return;
-
-        // Update position with velocity
         x += velocityX * delta;
         y += velocityY * delta;
         bounds.setPosition(x, y);
 
-
-        // Deactivate if out of bounds
         if (x < -width || x > Gdx.graphics.getWidth() ||
             y < -height || y > Gdx.graphics.getHeight()) {
             isActive = false;

@@ -21,7 +21,6 @@ public class MediumChallenge implements ChallengeGame {
     private boolean completed;
     private Random random;
 
-    // ✅ Add for text wrapping
     private GlyphLayout layout;
     private Texture textBoxBackground;
 
@@ -29,13 +28,11 @@ public class MediumChallenge implements ChallengeGame {
     private static final float GAME_DURATION = 15f;
     private static final int INGREDIENT_SIZE = 250;
 
-    // Constructor with Dependency Injection
     public MediumChallenge(ChallengeObjectManager objectManager) {
         this.objectManager = objectManager;
         ingredientTexture = new Texture("dating/brian_purple_flower.png");
         badIngredientTexture = new Texture("dating/brian_red_flower.png");
 
-        // ✅ Initialize text wrapping components
         layout = new GlyphLayout();
         textBoxBackground = new Texture("dating/decisionBox.png");
 
@@ -80,12 +77,10 @@ public class MediumChallenge implements ChallengeGame {
         float x = random.nextInt(Gdx.graphics.getWidth() - INGREDIENT_SIZE);
         float y = random.nextInt(Gdx.graphics.getHeight() - 200) + 100;
 
-        // 40% good
         boolean isGood = random.nextFloat() < 0.4f;
         Texture texture = isGood ? ingredientTexture : badIngredientTexture;
         int points = isGood ? 1 : -2;
 
-        // Move horizontally
         float velocityX = -50 + random.nextInt(100);
 
         objectManager.spawnMovingObject(x, y, ingredientTexture.getWidth()/2, ingredientTexture.getHeight()/2,
@@ -96,7 +91,6 @@ public class MediumChallenge implements ChallengeGame {
     public void render(SpriteBatch batch, BitmapFont font) {
         objectManager.render(batch);
 
-        // ✅ Timer box (kiri atas)
         float timerBoxWidth = 150;
         float timerBoxHeight = 50;
         float timerBoxX = 30;
@@ -106,7 +100,6 @@ public class MediumChallenge implements ChallengeGame {
         drawWrappedText(batch, font, textBoxBackground, timerText,
             timerBoxX, timerBoxY, timerBoxWidth, timerBoxHeight, 1.5f);
 
-        // ✅ Score box (kanan atas)
         float scoreBoxWidth = 150;
         float scoreBoxHeight = 50;
         float scoreBoxX = Gdx.graphics.getWidth() - scoreBoxWidth - 30;
@@ -116,7 +109,6 @@ public class MediumChallenge implements ChallengeGame {
         drawWrappedText(batch, font, textBoxBackground, scoreText,
             scoreBoxX, scoreBoxY, scoreBoxWidth, scoreBoxHeight, 1.5f);
 
-        // ✅ Instruction box (tengah atas)
         float instructionBoxWidth = 400;
         float instructionBoxHeight = 60;
         float instructionBoxX = Gdx.graphics.getWidth() / 2f - instructionBoxWidth / 2;
@@ -126,7 +118,6 @@ public class MediumChallenge implements ChallengeGame {
         drawWrappedText(batch, font, textBoxBackground, instructionText,
             instructionBoxX, instructionBoxY, instructionBoxWidth, instructionBoxHeight, 1f);
 
-        // ✅ Completion message box (tengah layar)
         if (completed) {
             float completeBoxWidth = 400;
             float completeBoxHeight = 100;
@@ -144,16 +135,13 @@ public class MediumChallenge implements ChallengeGame {
         objectManager.handleClick(x, y);
     }
 
-    // ✅ Enhanced drawWrappedText dengan parameter scale
     private void drawWrappedText(SpriteBatch batch, BitmapFont font, Texture background,
                                  String text, float boxX, float boxY, float boxWidth, float boxHeight, float scale) {
-        // Draw background box
+
         batch.draw(background, boxX, boxY, boxWidth, boxHeight);
 
-        // Set font scale first
         font.getData().setScale(scale);
 
-        // Text wrapping
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         List<String> lines = new ArrayList<>();
@@ -180,7 +168,6 @@ public class MediumChallenge implements ChallengeGame {
             lines.add(line.toString().trim());
         }
 
-        // Draw text (centered in box)
         font.setColor(0, 0, 0, 1); // Black text
 
         float lineHeight = 25 * scale; // Scale line height
@@ -194,7 +181,6 @@ public class MediumChallenge implements ChallengeGame {
             textY -= lineHeight;
         }
 
-        // Reset color & scale
         font.setColor(1, 1, 1, 1);
         font.getData().setScale(1f);
     }
@@ -215,7 +201,6 @@ public class MediumChallenge implements ChallengeGame {
         ingredientTexture.dispose();
         badIngredientTexture.dispose();
 
-        // ✅ Dispose text box background
         if (textBoxBackground != null) {
             textBoxBackground.dispose();
         }

@@ -33,11 +33,7 @@ public class ChallengeState implements GameState {
     private Texture buttonTexture;
     private Texture buttonHoverTexture;
     private boolean showContinueButton;
-
-    // ✅ Add GlyphLayout for text wrapping
     private GlyphLayout layout;
-
-    // ✅ Add texture for text background box
     private Texture textBoxBackground;
 
     public ChallengeState(GameStateManager gsm, DatingStrategy datingStrategy,
@@ -52,7 +48,7 @@ public class ChallengeState implements GameState {
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Chall.png");
         font = new BitmapFont();
-        layout = new GlyphLayout(); // ✅ Initialize layout
+        layout = new GlyphLayout();
 
         textBoxBackground = new Texture("dating/decisionBox.png");
 
@@ -137,11 +133,8 @@ public class ChallengeState implements GameState {
     @Override
     public void render(SpriteBatch batch) {
         batch.begin();
-
-        // Draw background
         batch.draw(background, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        // ✅ Draw title dengan text wrapping
         float titleBoxWidth = 300;
         float titleBoxHeight = 50;
         float titleBoxX = Gdx.graphics.getWidth() / 2f - titleBoxWidth / 2;
@@ -151,10 +144,7 @@ public class ChallengeState implements GameState {
             "CHALLENGE TIME!",
             titleBoxX, titleBoxY, titleBoxWidth, titleBoxHeight);
 
-        // Draw challenge game
         challengeGame.render(batch, font);
-
-        // Draw continue button if game completed
         if (showContinueButton) {
             continueButton.render(batch, font);
         }
@@ -162,13 +152,11 @@ public class ChallengeState implements GameState {
         batch.end();
     }
 
-    // ✅ Method untuk text wrapping
+    // Method untuk text wrapping
     private void drawWrappedText(SpriteBatch batch, BitmapFont font, Texture background,
                                  String text, float boxX, float boxY, float boxWidth, float boxHeight) {
-        // Draw background box
         batch.draw(background, boxX, boxY, boxWidth, boxHeight);
 
-        // Text wrapping
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
         List<String> lines = new ArrayList<>();
@@ -187,7 +175,6 @@ public class ChallengeState implements GameState {
         }
         lines.add(line.toString().trim());
 
-        // Draw text (centered in box)
         font.getData().setScale(2f);
         font.setColor(0, 0, 0, 1); // Black text
 
@@ -201,8 +188,6 @@ public class ChallengeState implements GameState {
             font.draw(batch, textLine, textX, textY);
             textY -= lineHeight;
         }
-
-        // Reset color & scale
         font.setColor(1, 1, 1, 1);
         font.getData().setScale(1f);
     }

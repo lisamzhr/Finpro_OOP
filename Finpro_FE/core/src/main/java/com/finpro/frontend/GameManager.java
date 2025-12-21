@@ -6,10 +6,6 @@ import com.finpro.frontend.states.GameStateManager;
 
 import javax.swing.text.LabelView;
 
-/**
- * Simple singleton to keep current player and backend service.
- * States can call GameManager.getInstance() to read/write player or call backend.
- */
 public class GameManager {
     private static final GameManager INSTANCE = new GameManager();
 
@@ -45,10 +41,6 @@ public class GameManager {
         return gsm;
     }
 
-    /**
-     * Convenience method: register player via backend and set currentPlayer on success.
-     * Caller must handle UI changes (or you can push states here if you want).
-     */
     public void registerPlayer(String username, BackendService.RequestCallback callback) {
         backendService.register(username, new BackendService.RequestCallback() {
             @Override

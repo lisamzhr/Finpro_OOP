@@ -5,9 +5,7 @@ import com.badlogic.gdx.Net;
 import com.badlogic.gdx.net.HttpRequestBuilder;
 
 public class BackendService {
-
     private static final String BASE_URL = "http://127.0.0.1:8081/api/player";
-
     public interface RequestCallback {
         void onSuccess(String response);
         void onError(String error);

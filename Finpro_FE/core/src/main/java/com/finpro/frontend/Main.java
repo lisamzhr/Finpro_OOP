@@ -19,7 +19,6 @@ public class Main extends ApplicationAdapter {
         batch = new SpriteBatch();
         gsm = new GameStateManager();
 
-        // Create shared ButtonManager for all states
         defaultFont = new BitmapFont();
         ButtonFactory buttonFactory = new ButtonFactory(defaultFont);
         buttonManager = new ButtonManager(buttonFactory);
@@ -27,10 +26,7 @@ public class Main extends ApplicationAdapter {
         System.out.println("=== Game Started ===");
         System.out.println("ButtonManager created");
 
-        // Set GSM ke GameManager dulu
         GameManager.getInstance().setGsm(gsm);
-
-        // Push MenuState - pass GameManager.getInstance()
         gsm.push(new MenuState(gsm, buttonManager));
     }
 
@@ -43,7 +39,6 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void resize(int width, int height) {
-        // Handle resize if needed
     }
 
     @Override

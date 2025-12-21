@@ -16,24 +16,31 @@ public class Button {
     private Texture texture;
     private Texture hoverTexture;
     private GlyphLayout layout;
-    private int points; // Untuk choice button
+    private int points;
+
+    private float minHeight = 60f;
+    private float baseWidth;
+    private float baseX;
+    private float baseY;
 
     public Button() {
         bounds = new Rectangle();
         layout = new GlyphLayout();
     }
 
-    public Rectangle getBounds() {
-        return bounds;
-    }
-
-    // Set dengan text
     public void set(String text, float x, float y, float width, float height, Texture texture) {
         this.text = text;
         this.texture = texture;
         this.hoverTexture = null;
         this.points = 0;
-        bounds.set(x, y, width, height);
+        this.baseX = x;
+        this.baseY = y;
+        this.baseWidth = width;
+        this.minHeight = height;
+
+        float calculatedHeight = calculateDynamicHeight(text, width, height);
+        bounds.set(x, y, width, calculatedHeight);
+
         isHovered = false;
         wasClicked = false;
     }
@@ -51,7 +58,13 @@ public class Button {
         this.texture = null;
         this.hoverTexture = null;
         this.points = points;
-        bounds.set(x, y, width, height);
+        this.baseX = x;
+        this.baseY = y;
+        this.baseWidth = width;
+        this.minHeight = height;
+        float calculatedHeight = calculateDynamicHeight(text, width, height);
+        bounds.set(x, y, width, calculatedHeight);
+
         isHovered = false;
         wasClicked = false;
     }
@@ -62,7 +75,13 @@ public class Button {
         this.texture = texture;
         this.hoverTexture = null;
         this.points = points;
-        bounds.set(x, y, width, height);
+        this.baseX = x;
+        this.baseY = y;
+        this.baseWidth = width;
+        this.minHeight = height;
+        float calculatedHeight = calculateDynamicHeight(text, width, height);
+        bounds.set(x, y, width, calculatedHeight);
+
         isHovered = false;
         wasClicked = false;
     }
@@ -73,6 +92,10 @@ public class Button {
         this.texture = texture;
         this.hoverTexture = null;
         this.points = 0;
+        this.baseX = x;
+        this.baseY = y;
+        this.baseWidth = width;
+        this.minHeight = height;
         bounds.set(x, y, width, height);
         isHovered = false;
         wasClicked = false;
@@ -83,6 +106,47 @@ public class Button {
                           Texture texture, Texture hoverTexture) {
         setNoText(x, y, width, height, texture);
         this.hoverTexture = hoverTexture;
+    }
+
+    private float calculateDynamicHeight(String text, float width, float minHeight) {
+        if (text == null || text.isEmpty()) {
+            return minHeight;
+        }
+
+        BitmapFont tempFont = new BitmapFont();
+        float scale = 1.5f;
+        tempFont.getData().setScale(scale);
+
+        float maxWidth = width - 40; // Padding
+        String[] words = text.split(" ");
+        int lineCount = 0;
+        StringBuilder line = new StringBuilder();
+
+        for (String word : words) {
+            String testLine = line.length() == 0 ? word : line + " " + word;
+            layout.setText(tempFont, testLine);
+
+            if (layout.width > maxWidth) {
+                if (line.length() > 0) {
+                    lineCount++;
+                    line = new StringBuilder(word);
+                } else {
+                    lineCount++;
+                    line = new StringBuilder();
+                }
+            } else {
+                line = new StringBuilder(testLine);
+            }
+        }
+        if (line.length() > 0) {
+            lineCount++;
+        }
+
+        tempFont.dispose();
+        float lineHeight = 30f;
+        float padding = 30f;
+        float calculatedHeight = padding + (lineCount * lineHeight);
+        return Math.max(minHeight, calculatedHeight);
     }
 
     // Reset untuk pool
@@ -110,8 +174,6 @@ public class Button {
             Gdx.graphics.setSystemCursor(com.badlogic.gdx.graphics.Cursor.SystemCursor.Hand);
         }
     }
-
-
 
     public void render(SpriteBatch batch, BitmapFont font) {
         // Kalau ada texture, draw texture
@@ -148,64 +210,37 @@ public class Button {
             batch.begin();
         }
 
-        // Draw text
         if (text != null && font != null) {
-            // ✅ Calculate optimal font scale berdasarkan text length
-            float maxScale = 2.0f;
-            float minScale = 1.2f;
-            float scale = maxScale;
-
+            float scale = 1.5f;
             float maxWidth = bounds.width - 40; // Padding kiri-kanan
-            float maxHeight = bounds.height - 20; // Padding atas-bawah
 
-            // ✅ Text wrapping dengan scale yang menyesuaikan
+            font.getData().setScale(scale);
             String[] words = text.split(" ");
             java.util.List<String> lines = new java.util.ArrayList<>();
+            StringBuilder line = new StringBuilder();
 
-            // Try different scales until text fits
-            boolean fits = false;
-            while (scale >= minScale && !fits) {
-                font.getData().setScale(scale);
-                lines.clear();
+            for (String word : words) {
+                String testLine = line.length() == 0 ? word : line + " " + word;
+                layout.setText(font, testLine);
 
-                StringBuilder line = new StringBuilder();
-                for (String word : words) {
-                    String testLine = line.length() == 0 ? word : line + " " + word;
-                    layout.setText(font, testLine);
-
-                    if (layout.width > maxWidth) {
-                        if (line.length() > 0) {
-                            lines.add(line.toString());
-                            line = new StringBuilder(word);
-                        } else {
-                            // Single word too long, force break
-                            lines.add(word);
-                            line = new StringBuilder();
-                        }
+                if (layout.width > maxWidth) {
+                    if (line.length() > 0) {
+                        lines.add(line.toString());
+                        line = new StringBuilder(word);
                     } else {
-                        line = new StringBuilder(testLine);
+                        lines.add(word);
+                        line = new StringBuilder();
                     }
-                }
-                if (line.length() > 0) {
-                    lines.add(line.toString());
-                }
-
-                // Check if total height fits
-                float lineHeight = layout.height + 5;
-                float totalHeight = lines.size() * lineHeight;
-
-                if (totalHeight <= maxHeight) {
-                    fits = true;
                 } else {
-                    scale -= 0.1f; // Reduce scale and try again
+                    line = new StringBuilder(testLine);
                 }
             }
-
-            // ✅ Draw multi-line text centered
-            font.getData().setScale(scale);
-            float lineHeight = layout.height + 5;
-            float totalHeight = lines.size() * lineHeight;
-            float startY = bounds.y + (bounds.height + totalHeight) / 2;
+            if (line.length() > 0) {
+                lines.add(line.toString());
+            }
+            float lineHeight = 30f;
+            float totalTextHeight = lines.size() * lineHeight;
+            float startY = bounds.y + (bounds.height + totalTextHeight) / 2 - 5;
 
             font.setColor(1, 1, 1, 1);
 
@@ -233,5 +268,9 @@ public class Button {
 
     public int getPoints() {
         return points;
+    }
+
+    public float getHeight() {
+        return bounds.height;
     }
 }

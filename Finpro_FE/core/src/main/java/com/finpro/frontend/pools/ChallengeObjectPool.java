@@ -1,5 +1,4 @@
 package com.finpro.frontend.pools;
-
 import com.finpro.frontend.models.ChallengeObject;
 
 public class ChallengeObjectPool extends ObjectPool<ChallengeObject> {

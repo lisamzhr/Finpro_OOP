@@ -15,13 +15,6 @@ public class ButtonManager {
         this.factory = factory;
     }
 
-    //Regular Buttons
-
-    public Button createButton(String text, float x, float y, float width, float height,
-                               Texture texture) {
-        return factory.createButton(text, x, y, width, height, texture);
-    }
-
     public Button createButton(String text, float x, float y, float width, float height,
                                Texture texture, Texture hoverTexture) {
         return factory.createButton(text, x, y, width, height, texture, hoverTexture);
@@ -37,20 +30,11 @@ public class ButtonManager {
         return factory.createButtonNoText(x, y, width, height, texture, hoverTexture);
     }
 
-    //Choice Buttons
-
-    public Button createChoiceButton(String text, float x, float y,
-                                     float width, float height, int points) {
-        return factory.createChoiceButton(text, x, y, width, height, points);
-    }
-
     public Button createChoiceButtonWithTexture(String text, float x, float y,
                                                 float width, float height, int points,
                                                 Texture texture) {
         return factory.createChoiceButtonWithTexture(text, x, y, width, height, points, texture);
     }
-
-    //Management
 
     public void releaseButton(Button button) {
         factory.releaseButton(button);

@@ -27,7 +27,7 @@ public class ModernSkin implements Skin {
 
     @Override
     public int getPrice() {
-        return 4; // ✅ 4 COINS
+        return 4; // 4 coin
     }
 
     @Override

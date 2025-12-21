@@ -11,7 +11,6 @@ public class ChallengeObjectManager {
     private ChallengeObjectFactory factory;
     private List<ChallengeObject> activeObjects;
 
-    // Constructor with Dependency Injection
     public ChallengeObjectManager(ChallengeObjectFactory factory) {
         this.factory = factory;
         this.activeObjects = new ArrayList<>();
@@ -44,7 +43,6 @@ public class ChallengeObjectManager {
             }
         }
 
-        // Remove inactive objects and return to pool
         for (ChallengeObject obj : toRemove) {
             activeObjects.remove(obj);
             factory.releaseObject(obj);
@@ -88,7 +86,7 @@ public class ChallengeObjectManager {
         for (ChallengeObject obj : activeObjects) {
             if (obj.contains(clickX, clickY)) {
                 obj.onClick();
-                break; // Hanya klik 1 object per click
+                break;
             }
         }
     }

@@ -1,6 +1,4 @@
 package com.finpro.frontend.pools;
-
-
 import com.finpro.frontend.models.Button;
 
 public class ButtonPool extends ObjectPool<Button> {
