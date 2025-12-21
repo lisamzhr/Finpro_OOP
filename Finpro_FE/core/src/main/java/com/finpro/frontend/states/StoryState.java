@@ -1,6 +1,7 @@
 package com.finpro.frontend.states;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -25,13 +26,15 @@ public class StoryState implements GameState {
     private Texture buttonTexture;
     private Texture buttonHoverTexture;
     private GlyphLayout layout;
+    private Texture textBox;
 
     public StoryState(GameStateManager gsm, DatingStrategy strategy, String boyId, ButtonManager buttonManager) { // ✅ Hapus player parameter
         this.gsm = gsm;
-        this.player = gsm.getPlayer(); // ✅ Ambil player dari GSM
+        this.player = gsm.getPlayer();
         this.strategy = strategy;
         this.boyId = boyId;
         this.buttonManager = buttonManager;
+        textBox = new Texture("white.png");
 
         background = new Texture("dating/" + boyId.toLowerCase() + "_Background_Conv.png");
         boyImage = new Texture("dating/" + boyId.toLowerCase() + "_full.png");
@@ -80,9 +83,7 @@ public class StoryState implements GameState {
 
         float playerX = 50;
         float playerY = 50;
-        float playerWidth = 250;
-        float playerHeight = 500;
-        player.render(batch, playerX, playerY, playerWidth, playerHeight);
+        player.render(batch, playerX, playerY);
 
         // Draw boy image (kanan)
         int boyPos = 300;
@@ -93,7 +94,8 @@ public class StoryState implements GameState {
 
         // Draw story text (wrap text)
         font.getData().setScale(3f);
-        drawWrappedText(batch, font, storyText, 300, 900, 700);
+        drawWrappedText(batch, font, textBox,
+            storyText, 150, 0, 900);
         font.getData().setScale(1f);
 
         // Draw continue button
@@ -102,25 +104,49 @@ public class StoryState implements GameState {
         batch.end();
     }
 
-    private void drawWrappedText(SpriteBatch batch, BitmapFont font,
+    private void drawWrappedText(SpriteBatch batch, BitmapFont font, Texture background,
                                  String text, float x, float y, float maxWidth) {
+        // Hitung jumlah baris yang dibutuhkan
         String[] words = text.split(" ");
         StringBuilder line = new StringBuilder();
-        float currentY = y;
+        java.util.List<String> lines = new java.util.ArrayList<>();
 
         for (String word : words) {
             String testLine = line + word + " ";
             layout.setText(font, testLine);
 
             if (layout.width > maxWidth) {
-                font.draw(batch, line.toString(), x, currentY);
-                currentY -= 40;
+                lines.add(line.toString().trim());
                 line = new StringBuilder(word + " ");
             } else {
                 line.append(word).append(" ");
             }
         }
-        font.draw(batch, line.toString(), x, currentY);
+        lines.add(line.toString().trim());
+
+        // Hitung tinggi total box
+        float lineHeight = 40;
+        float padding = 20;
+        float boxHeight = (lines.size() * lineHeight) + (padding * 2);
+        float boxWidth = maxWidth + (padding * 2);
+
+        // Posisi box di tengah bawah
+        float boxX = (Gdx.graphics.getWidth() - boxWidth) / 2f;
+        float boxY = 100; // Jarak dari bawah
+
+        // Draw background box
+        batch.draw(background, boxX, boxY, boxWidth, boxHeight);
+
+        // Draw text (dari atas ke bawah)
+        font.setColor(Color.BLACK);
+        float textY = boxY + boxHeight - padding - 10;
+
+        for (String textLine : lines) {
+            layout.setText(font, textLine);
+            float textX = boxX + padding;
+            font.draw(batch, textLine, textX, textY);
+            textY -= lineHeight;
+        }
     }
 
     @Override

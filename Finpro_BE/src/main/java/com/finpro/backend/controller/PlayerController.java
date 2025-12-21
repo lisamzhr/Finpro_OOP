@@ -93,4 +93,45 @@ public class PlayerController {
         Player player = playerService.updateLevel(request.getUsername(), request.getLevel());
         return ResponseEntity.ok(player);
     }
+
+    @PostMapping("/update-fashion-coin")
+    public ResponseEntity<?> updateFashionCoin(@RequestBody Map<String, Object> body) {
+        String username = (String) body.get("username");
+        Number fashionCoinNum = (Number) body.get("fashionCoin");
+
+        if (username == null || fashionCoinNum == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid input"));
+        }
+
+        Player player = playerService.updateFashionCoin(username, fashionCoinNum.floatValue());
+        //print ke console
+        Map<String, String> response = new HashMap<>();
+        response.put("playerId", player.getPlayerId());
+        response.put("username", player.getUsername());
+        response.put("fashionCoin", String.valueOf(player.getFashionCoin()));
+        response.put("message", "Coin updated successfully");
+        System.out.println("Update selected skin success: " + response);
+
+        return ResponseEntity.ok(player);
+    }
+
+    @PostMapping("/update-selected-skin")
+    public ResponseEntity<?> updateSelectedSkin(@RequestBody Map<String, Object> body) {
+        String username = (String) body.get("username");
+        Integer selectedSkinId = (Integer) body.get("selectedSkinId");
+
+        if (username == null || selectedSkinId == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Invalid input"));
+        }
+
+        Player player = playerService.updateSelectedSkin(username, selectedSkinId);
+        //print ke console
+        Map<String, String> response = new HashMap<>();
+        response.put("playerId", player.getPlayerId());
+        response.put("username", player.getUsername());
+        response.put("selectedSkinId", String.valueOf(player.getSelectedSkinId()));
+        response.put("message", "Selected skin updated successfully");
+        System.out.println("Update selected skin success: " + response);
+        return ResponseEntity.ok(player);
+    }
 }

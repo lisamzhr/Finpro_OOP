@@ -12,12 +12,12 @@ import java.util.Map;
 @RequestMapping("/api")
 @CrossOrigin(origins = "*")
 public class HealthController {
-    //method
+
     @GetMapping("/health")
     public Map<String, Object> healthCheck() {
         Map<String, Object> healthStatus = new HashMap<>();
         healthStatus.put("status", "UP");
-        healthStatus.put("message", "Jetpack Joyride Backend is running!");
+        healthStatus.put("message", "Fashion Game Backend is running!");
         healthStatus.put("timestamp", System.currentTimeMillis());
         return healthStatus;
     }
@@ -26,19 +26,30 @@ public class HealthController {
     public Map<String, Object> info() {
         Map<String, Object> response = new HashMap<>();
 
-        response.put("application", "CS6_JetpackJoyride_Backend");
+        response.put("application", "Fashion_Game_Backend");
         response.put("version", "1.0");
-        response.put("description", "Backend untuk game Jetpack Joyride - Mengelola data pemain dan skor");
+        response.put("description", "Backend untuk Fashion Dating Game - Mengelola data player, level, dan fashion coin");
 
-        //daftar endpoint
+        // Daftar endpoint
         Map<String, String> endpoints = new HashMap<>();
         endpoints.put("basePath", "/api");
-        endpoints.put("players", "/api/players");
-        endpoints.put("scores", "/api/scores");
-        endpoints.put("leaderboard", "/api/scores/leaderboard");
         endpoints.put("health", "/api/health");
+        endpoints.put("info", "/api/info");
+        endpoints.put("register", "/api/player/register");
+        endpoints.put("login", "/api/player/login");
+        endpoints.put("updateLevel", "/api/player/update-level");
+        endpoints.put("updateFashionCoin", "/api/player/update-fashion-coin");
+        endpoints.put("updateSelectedSkin", "/api/player/update-selected-skin");
 
         response.put("endpoints", endpoints);
+
+        // Features info
+        Map<String, String> features = new HashMap<>();
+        features.put("observer_pattern", "Auto-save player data on changes");
+        features.put("factory_pattern", "Skin creation system");
+        features.put("strategy_pattern", "Dating challenge strategies");
+
+        response.put("features", features);
 
         return response;
     }

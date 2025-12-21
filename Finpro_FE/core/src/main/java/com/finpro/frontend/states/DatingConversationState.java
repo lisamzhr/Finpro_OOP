@@ -148,9 +148,7 @@ public class DatingConversationState implements GameState {
         // ✅ Draw PLAYER with selected skin (kiri)
         float playerX = 50;
         float playerY = 50;
-        float playerWidth = 250;
-        float playerHeight = 500;
-        player.render(batch, playerX, playerY, playerWidth, playerHeight);
+        player.render(batch, playerX, playerY);
 
         // Draw boy image (kanan)
         int boyPos = 300;

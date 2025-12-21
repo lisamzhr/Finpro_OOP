@@ -110,8 +110,8 @@ public class DressingHouseState implements GameState {
         sb.draw(background, 0, 0, screenWidth, screenHeight);
 
         // Draw player skin (centered)
-        float skinWidth = 320;
-        float skinHeight = 650;
+        float skinWidth = 600;
+        float skinHeight = 900;
         float skinX = (screenWidth - skinWidth) / 2;
         float skinY = (screenHeight - skinHeight) / 2;
         sb.draw(currentSkin.getTexture(), skinX, skinY, skinWidth, skinHeight);
