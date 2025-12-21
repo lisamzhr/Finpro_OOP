@@ -24,6 +24,8 @@ public class MenuState implements GameState {
     private Button startGameButton;
     private Texture buttonTexture;
     private Texture buttonHoverTexture;
+    private Texture logoTexture;
+    private Texture startGameBGTexture;
 
     public MenuState(GameStateManager gsm, ButtonManager buttonManager) {
         this.gsm = gsm;
@@ -37,6 +39,8 @@ public class MenuState implements GameState {
         font.setColor(Color.WHITE);
 
         backgroundTexture = new Texture("menu/background.png");
+        startGameBGTexture = new Texture("menu/startGameBG.png");
+        logoTexture = new Texture("menu/logo.png");
 
         // Load button textures
         buttonTexture = new Texture("button_normal.png");
@@ -46,12 +50,12 @@ public class MenuState implements GameState {
         float buttonWidth = 250;
         float buttonHeight = 80;
         float centerX = Gdx.graphics.getWidth() / 2f - buttonWidth / 2f;
-        float centerY = Gdx.graphics.getHeight() / 2f - buttonHeight / 2f;
+        float buttonY = Gdx.graphics.getHeight() / 2f - buttonHeight / 2f - 320;
 
         startGameButton = buttonManager.createButton(
             "START GAME",
             centerX,
-            centerY,
+            buttonY,
             buttonWidth,
             buttonHeight,
             buttonTexture,
@@ -75,13 +79,10 @@ public class MenuState implements GameState {
             // Check house clicks
             if (Gdx.input.justTouched()) {
                 if (dressingHouse.isHovered()) {
-                    buttonManager.releaseButton(startGameButton);
                     gsm.setState(new DressingHouseState(gsm, buttonManager));
                     return;
                 } else if (datingHouse.isHovered()) {
-                    //buttonManager.releaseButton(startGameButton);
                     gsm.setState(new DatingHouseState(gsm, buttonManager));
-                    buttonManager.releaseButton(startGameButton);
                     System.out.println("Dating House clicked!");
                     return;
                 }
@@ -97,12 +98,18 @@ public class MenuState implements GameState {
 
     @Override
     public void render(SpriteBatch batch) {
-        // Draw background
         batch.begin();
-        batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         if (player == null) {
-            // Initial view: "Start Game" button
+            float logoWidth = 800;
+            float logoHeight = 800;
+            float logoX = Gdx.graphics.getWidth() / 2f - logoWidth / 2f;
+            float logoY = Gdx.graphics.getHeight() / 2f - logoHeight / 2f + 40;
+
+            // Drae BG
+            batch.draw(startGameBGTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            // Draw logo
+            batch.draw(logoTexture, logoX, logoY, logoWidth, logoHeight);
             startGameButton.render(batch, font);
 
         } else {
@@ -115,6 +122,7 @@ public class MenuState implements GameState {
             font.getData().setScale(2f);
 
             // Render houses
+            batch.draw(backgroundTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             datingHouse.render(batch);
             dressingHouse.render(batch);
         }
@@ -131,6 +139,10 @@ public class MenuState implements GameState {
 
         if (font != null) {
             font.dispose();
+        }
+
+        if (startGameBGTexture != null) {
+            startGameBGTexture.dispose();
         }
 
         if (buttonTexture != null) {

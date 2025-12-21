@@ -31,6 +31,7 @@ public class StartGameState implements GameState {
 
     private Texture buttonTexture;
     private Texture buttonHoverTexture;
+    private Texture startGameBGTexture;
 
     private boolean loading = false;
     private String screenMode = "menu"; // "menu", "register_input", "register_success", "login_username", "login_playerid"
@@ -62,6 +63,9 @@ public class StartGameState implements GameState {
         // Load button textures
         buttonTexture = new Texture("button_normal.png");
         buttonHoverTexture = new Texture("button_hover.png");
+
+        // Load backgorund
+        startGameBGTexture = new Texture("menu/startGameBG.png");
 
         float buttonWidth = 200;
         float buttonHeight = 60;
@@ -233,8 +237,12 @@ public class StartGameState implements GameState {
     @Override
     public void render(SpriteBatch batch) {
         // Clear screen
-        Gdx.gl.glClearColor(CREAM.r, CREAM.g, CREAM.b, CREAM.a);
+        Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        batch.begin();
+        batch.draw(startGameBGTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        batch.end();
 
         // Draw shapes (backgrounds, input boxes, borders)
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
@@ -249,9 +257,7 @@ public class StartGameState implements GameState {
 
         shapeRenderer.end();
 
-        // Draw text and buttons
         batch.begin();
-
         if (screenMode.equals("menu")) {
             renderMenuText(batch);
             registerButton.render(batch, font);
@@ -268,7 +274,6 @@ public class StartGameState implements GameState {
         } else if (screenMode.equals("loading")) {
             renderLoadingText(batch);
         }
-
         batch.end();
     }
 
@@ -461,6 +466,10 @@ public class StartGameState implements GameState {
         }
         if (buttonHoverTexture != null) {
             buttonHoverTexture.dispose();
+        }
+
+        if (startGameBGTexture != null) {
+            startGameBGTexture.dispose();
         }
 
         // Release buttons back to pool
