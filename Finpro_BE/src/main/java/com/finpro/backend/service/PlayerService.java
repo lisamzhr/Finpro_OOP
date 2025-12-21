@@ -39,4 +39,22 @@ public class PlayerService {
         player.setLevel(newLevel);
         return playerRepository.save(player);
     }
+
+    // UPDATE FASHION COIN
+    public Player updateFashionCoin(String username, float fashionCoin) {
+        Player player = playerRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        player.setFashionCoin(fashionCoin);
+        return playerRepository.save(player);
+    }
+
+    // UPDATE SELECTED SKIN
+    public Player updateSelectedSkin(String username, int selectedSkinId) {
+        Player player = playerRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Player not found"));
+
+        player.setSelectedSkinId(selectedSkinId);
+        return playerRepository.save(player);
+    }
 }

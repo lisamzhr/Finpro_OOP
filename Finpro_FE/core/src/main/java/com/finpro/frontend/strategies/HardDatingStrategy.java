@@ -8,32 +8,34 @@ public class HardDatingStrategy implements DatingStrategy{
     public int challengeStage() { return 1; }
 
     @Override
-    public boolean isPass(int totalPoints) { return totalPoints >= 12; }
+    public boolean isPass(int totalPoints) { return totalPoints >= 22; }
 
     @Override
     public String getFinalMessage(int totalPoints) {
-        if (totalPoints >= 20) {
-            return "Chris: You inspire me! Let me paint you sometime! 🎨❤️";
-        } else if (totalPoints >= 12) {
-            return "Chris: Thanks for the lovely time! 😊";
+        if (totalPoints >= 25) {
+            return "Chris: You're my perfect muse... Let me write poetry about you! 🎨❤️";
+        } else if (totalPoints >= 22) {
+            return "Chris: You have a beautiful soul. I'd love to see you again 😊";
         } else {
-            return "Chris: Maybe we're not on the same wavelength...";
+            return "Chris: We see the world differently... But that's okay.";
         }
     }
 
     @Override
     public String getStory() {
-        return "Chris adalah art student. Dia romantic, creative, dan " +
-            "passionate tentang seni. Dia suka music, painting, dan poetry. " +
-            "Kalian akan date di art gallery!";
+        return "Chris adalah mahasiswa Fakultas Hukum yang unik. Di balik pemikiran " +
+            "logisnya tentang justice dan law, dia punya jiwa seni yang mendalam. " +
+            "Dia melukis untuk mengekspresikan perasaan, menulis puisi di waktu senggang, " +
+            "dan percaya bahwa art is the highest form of hope. " +
+            "Kalian akan date di art gallery favoritnya!";
     }
 
     @Override
     public String getConversationQuestion(int stage) {
         switch(stage) {
-            case 0: return "Chris: Hey! What kind of art speaks to your soul?";
-            case 1: return "Chris: Beautiful answer. How do you express yourself?";
-            case 2: return "Chris: I love that. What moves you emotionally?";
+            case 0: return "Chris: Welcome! This painting is my favorite. What do you see when you look at abstract art?";
+            case 1: return "Chris: Interesting...Law school is very logical, but I need art to balance it. How do you balance your life?";
+            case 2: return "Chris: Deep. Last question - if I paint your portrait, what emotion should I capture?";
             default: return "";
         }
     }
@@ -42,19 +44,19 @@ public class HardDatingStrategy implements DatingStrategy{
     public String[][] getConversationChoices(int stage) {
         switch(stage) {
             case 0: return new String[][] {
-                {"Visual arts & paintings", "5"},
-                {"Music & poetry", "5"},
-                {"Not really into art", "1"}
+                {"I see emotions, stories, and the artist's soul expressed freely", "5"},
+                {"It's about interpretation, everyone sees something different", "3"},
+                {"Honestly? Just random colors and shapes to me", "2"}
             };
             case 1: return new String[][] {
-                {"Through creativity", "5"},
-                {"Through words", "4"},
-                {"I don't really", "2"}
+                {"I balance logic with creativity too, both are important", "5"},
+                {"I focus on one thing at a time, easier that way", "3"},
+                {"I just go with the flow, no specific balance", "2"}
             };
             case 2: return new String[][] {
-                {"Beauty in simple things", "5"},
-                {"Deep connections", "5"},
-                {"Success & achievements", "2"}
+                {"Capture the spark in my eyes when I'm passionate about something", "5"},
+                {"Something peaceful and content, I guess", "3"},
+                {"I don't know... whatever you want?", "2"}
             };
             default: return new String[][]{};
         }
@@ -62,7 +64,6 @@ public class HardDatingStrategy implements DatingStrategy{
 
     @Override
     public String getChallengeDescription() {
-        return "Chris wants to paint a portrait of you! " +
-            "Will you be his muse for the evening?";
+        return "Chris wants to catch his favorite paint";
     }
 }

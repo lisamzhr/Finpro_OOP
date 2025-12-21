@@ -16,6 +16,8 @@ public class Player {
     private String username;
 
     private Integer level = 1;
+    private float fashionCoin;
+    private int selectedSkinId;
 
     @JsonProperty("createdAt")
     private LocalDateTime createdAt;
@@ -28,8 +30,11 @@ public class Player {
         this.playerId = generateShortId(); // Generate ID sendiri
         this.username = username;
         this.level = 1;
+        this.fashionCoin = 5;
+        this.selectedSkinId = 1;
         this.createdAt = LocalDateTime.now();
     }
+
 
     // Generate short ID (8 karakter alphanumeric)
     private String generateShortId() {
@@ -56,6 +61,22 @@ public class Player {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public float getFashionCoin() {
+        return fashionCoin;
+    }
+
+    public int getSelectedSkinId() {
+        return selectedSkinId;
+    }
+
+    public void setFashionCoin(float fashionCoin) {
+        this.fashionCoin = fashionCoin;
+    }
+
+    public void setSelectedSkinId(int selectedSkinId) {
+        this.selectedSkinId = selectedSkinId;
+    }
 
     @Override
     public String toString() {

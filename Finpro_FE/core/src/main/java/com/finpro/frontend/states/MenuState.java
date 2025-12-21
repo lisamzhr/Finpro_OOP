@@ -77,13 +77,10 @@ public class MenuState implements GameState {
             // Check house clicks
             if (Gdx.input.justTouched()) {
                 if (dressingHouse.isHovered()) {
-                    buttonManager.releaseButton(startGameButton);
                     gsm.setState(new DressingHouseState(gsm, buttonManager));
                     return;
                 } else if (datingHouse.isHovered()) {
-                    //buttonManager.releaseButton(startGameButton);
                     gsm.setState(new DatingHouseState(gsm, buttonManager));
-                    buttonManager.releaseButton(startGameButton);
                     System.out.println("Dating House clicked!");
                     return;
                 }

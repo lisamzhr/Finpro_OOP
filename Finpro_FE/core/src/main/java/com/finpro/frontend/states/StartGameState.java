@@ -200,10 +200,19 @@ public class StartGameState implements GameState {
                     String pid = extractValue(response, "playerId");
                     String uname = extractValue(response, "username");
                     String lvl = extractValue(response, "level");
+                    String fcoin = extractValue(response, "fashionCoin");
+                    String skinId = extractValue(response, "selectedSkinId");
+
 
                     System.out.println("LOGIN SUCCESS!");
 
-                    Player p = new Player(pid, uname, Integer.parseInt(lvl));
+                    Player p = new Player(pid, uname, Integer.valueOf(lvl));
+                    if (!fcoin.isEmpty()) {
+                        p.setFashionCoin(Float.parseFloat(fcoin));
+                    }
+                    if (!skinId.isEmpty()) {
+                        p.setSelectedSkinId(Integer.parseInt(skinId));
+                    }
                     gsm.setPlayer(p);
                     Gdx.app.postRunnable(() -> gsm.set(new MenuState(gsm, buttonManager)));
                 }

@@ -37,6 +37,11 @@ public class DatingHouseState implements GameState {
     private Texture brianProfileHover;
     private Texture chrisProfileHover;
 
+    //back button
+    private Button backButton;
+    private Texture buttonTexture;
+    private Texture buttonHoverTexture;
+
     // ✅ NEW: Error message display
     private String errorMessage = "";
     private float errorMessageTimer = 0;
@@ -59,6 +64,19 @@ public class DatingHouseState implements GameState {
         alexProfileHover = new Texture("dating/alex_profile.png");
         brianProfileHover = new Texture("dating/brian_profile.png");
         chrisProfileHover = new Texture("dating/chris_profile.png");
+
+        //back to menu
+        buttonTexture = new Texture("button_normal.png");
+        buttonHoverTexture = new Texture("button_hover.png");
+        backButton = buttonManager.createButton(
+            "Back to Menu",
+            Gdx.graphics.getWidth() / 2f - 100,
+            100,
+            200,
+            60,
+            buttonTexture,
+            buttonHoverTexture
+        );
 
         // Create boy buttons using ButtonManager
         float centerX = Gdx.graphics.getWidth() / 2f;
@@ -140,6 +158,7 @@ public class DatingHouseState implements GameState {
         alexButton.update();
         brianButton.update();
         chrisButton.update();
+        backButton.update();
 
         // ✅ Countdown error message timer
         if (errorMessageTimer > 0) {
@@ -149,31 +168,50 @@ public class DatingHouseState implements GameState {
             }
         }
 
+        //PRIORITAS: Cek back button DULU sebelum yang lain
+        if (backButton.isClicked()) {
+            System.out.println("Back button clicked! Returning to menu...");
+            gsm.set(new MenuState(gsm, buttonManager)); // ✅ GANTI dari pop() ke set()
+            return;
+        }
+
         // ✅ Get player's current skin
         int playerSkinId = player.getSelectedSkinId();
 
         // ✅ Check button clicks with validation
-        if (alexButton.isClicked() && player.getLevel() ==1) {
-            if (isSkinCompatible("ALEX", playerSkinId)) {
-                gsm.push(new StoryState(gsm, new EasyDatingStrategy(), "ALEX", buttonManager));
+        if (alexButton.isClicked()) {
+            if (player.getLevel() == 1) {
+                if (isSkinCompatible("ALEX", playerSkinId)) {
+                    gsm.push(new StoryState(gsm, new EasyDatingStrategy(), "ALEX", buttonManager));
+                } else {
+                    showError(getErrorMessage("ALEX"));
+                }
             } else {
-                showError(getErrorMessage("ALEX"));
+                showError("Complete previous level first!");
             }
         }
 
-        if (brianButton.isClicked() && player.getLevel() ==2) {
-            if (isSkinCompatible("BRIAN", playerSkinId)) {
-                gsm.push(new StoryState(gsm, new MediumDatingStrategy(), "BRIAN", buttonManager));
+        if (brianButton.isClicked()) {
+            if (player.getLevel() == 2) {
+                if (isSkinCompatible("BRIAN", playerSkinId)) {
+                    gsm.push(new StoryState(gsm, new MediumDatingStrategy(), "BRIAN", buttonManager));
+                } else {
+                    showError(getErrorMessage("BRIAN"));
+                }
             } else {
-                showError(getErrorMessage("BRIAN"));
+                showError("Complete previous level first!");
             }
         }
 
-        if (chrisButton.isClicked() && player.getLevel() ==3) {
-            if (isSkinCompatible("CHRIS", playerSkinId)) {
-                gsm.push(new StoryState(gsm, new HardDatingStrategy(), "CHRIS", buttonManager));
+        if (chrisButton.isClicked()) {
+            if (player.getLevel() == 3) {
+                if (isSkinCompatible("CHRIS", playerSkinId)) {
+                    gsm.push(new StoryState(gsm, new HardDatingStrategy(), "CHRIS", buttonManager));
+                } else {
+                    showError(getErrorMessage("CHRIS"));
+                }
             } else {
-                showError(getErrorMessage("CHRIS"));
+                showError("Complete previous level first!");
             }
         }
     }
@@ -195,7 +233,10 @@ public class DatingHouseState implements GameState {
         brianButton.render(batch, font);
         chrisButton.render(batch, font);
 
-        // ✅ Render error message if exists
+        //back button
+        backButton.render(batch, font);
+
+        //Render error message if exists
         if (!errorMessage.isEmpty()) {
             font.getData().setScale(1.5f);
             font.setColor(Color.RED);
@@ -223,6 +264,13 @@ public class DatingHouseState implements GameState {
         chrisProfileHover.dispose();
 
         // Release buttons back to pool
+        if (buttonTexture != null) {
+            buttonTexture.dispose();
+        }
+        if (buttonHoverTexture != null) {
+            buttonHoverTexture.dispose();
+        }
+
         if (alexButton != null) {
             buttonManager.releaseButton(alexButton);
             alexButton = null;
@@ -234,6 +282,10 @@ public class DatingHouseState implements GameState {
         if (chrisButton != null) {
             buttonManager.releaseButton(chrisButton);
             chrisButton = null;
+        }
+        if (backButton != null) {
+            buttonManager.releaseButton(backButton);
+            backButton = null;
         }
     }
 }

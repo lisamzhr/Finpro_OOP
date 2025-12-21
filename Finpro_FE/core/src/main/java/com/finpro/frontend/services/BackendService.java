@@ -114,4 +114,42 @@ public class BackendService {
 
         sendRequest(request, callback, "UPDATE_LEVEL");
     }
+
+    public void updateFashionCoin(String username, float fashionCoin, RequestCallback callback) {
+        String json = "{\"username\":\"" + username + "\",\"fashionCoin\":" + fashionCoin + "}";
+
+        System.out.println("\n=== UPDATE FASHION COIN REQUEST ===");
+        System.out.println("URL: " + BASE_URL + "/update-fashion-coin");
+        System.out.println("Body: " + json);
+
+        HttpRequestBuilder builder = new HttpRequestBuilder();
+        Net.HttpRequest request = builder.newRequest()
+            .method(Net.HttpMethods.POST)
+            .url(BASE_URL + "/update-fashion-coin")
+            .header("Content-Type", "application/json")
+            .content(json)
+            .timeout(30000)
+            .build();
+
+        sendRequest(request, callback, "UPDATE_FASHION_COIN");
+    }
+
+    public void updateSelectedSkin(String username, int skinId, RequestCallback callback) {
+        String json = "{\"username\":\"" + username + "\",\"selectedSkinId\":" + skinId + "}";
+
+        System.out.println("\n=== UPDATE SELECTED SKIN REQUEST ===");
+        System.out.println("URL: " + BASE_URL + "/update-selected-skin");
+        System.out.println("Body: " + json);
+
+        HttpRequestBuilder builder = new HttpRequestBuilder();
+        Net.HttpRequest request = builder.newRequest()
+            .method(Net.HttpMethods.POST)
+            .url(BASE_URL + "/update-selected-skin")
+            .header("Content-Type", "application/json")
+            .content(json)
+            .timeout(30000)
+            .build();
+
+        sendRequest(request, callback, "UPDATE_SELECTED_SKIN");
+    }
 }

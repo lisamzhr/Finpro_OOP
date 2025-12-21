@@ -13,7 +13,6 @@ public class Player {
     private String username;
     private int level;
     private float fashionCoin;
-    private float gameCoin;
     private int selectedSkinId = 0;
 
     private List<PlayerListener> listeners = new ArrayList<>();
@@ -22,8 +21,7 @@ public class Player {
         this.id = id;
         this.username = username;
         this.level = level;
-        fashionCoin = 5; // Start with 5 coins
-        gameCoin = 0;
+        fashionCoin = 5;
     }
 
     //Observer Pattern
@@ -52,9 +50,6 @@ public class Player {
     public float getFashionCoin() {
         return fashionCoin;
     }
-    public float getGameCoin() {
-        return gameCoin;
-    }
 
     //Setter + notify
     public void setUsername(String username) {
@@ -70,13 +65,6 @@ public class Player {
         notifyListeners("COIN_CHANGED");
     }
 
-    public void addCoin(int coin){
-        gameCoin += coin;
-    }
-
-    public void setGameCoin(float gameCoin) {
-        this.gameCoin = gameCoin;
-    }
 
     // Skin management
     public void setSelectedSkinId(int skinId) {
@@ -107,6 +95,6 @@ public class Player {
     }
 
     public void render(SpriteBatch batch, float x, float y) {
-        render(batch, x, y, 200, 400);
+        render(batch, x, y, getCurrentSkin().getTexture().getWidth()*0.65f, getCurrentSkin().getTexture().getHeight()*0.65f);
     }
 }
