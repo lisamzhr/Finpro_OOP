@@ -29,16 +29,16 @@ public class EasyDatingStrategy implements DatingStrategy {
 
     @Override
     public String getStory() {
-        return "Alex adalah atlet basket di kampus. Dia energetic, " +
-            "suka outdoor activities, dan punya personality yang fun. " +
-            "Kalian akan date di gym hall!";
+        return "Alex adalah Mahasiswa Teknik Komputer. Dia sangat nonchalant, " +
+            "Dia suka belajar dan hal-hal berbau tech and programming. " +
+            "Kalian akan date di library!";
     }
 
     @Override
     public String getConversationQuestion(int stage) {
         switch(stage) {
-            case 0: return "Alex: Hey! What do you like to do for fun?";
-            case 1: return "Alex: Haha nice! So, what's your vibe?";
+            case 0: return "Alex: Hi! Do you like coding?";
+            case 1: return "Alex: Haha nice! So, what's your hobby?";
             case 2: return "Alex: Cool! Before we start, any last words?";
             default: return "";
         }
@@ -48,14 +48,14 @@ public class EasyDatingStrategy implements DatingStrategy {
     public String[][] getConversationChoices(int stage) {
         switch(stage) {
             case 0: return new String[][] {
-                {"Talk about sports", "5"},
-                {"Talk about movies", "2"},
-                {"Talk about food", "3"}
+                {"Yes", "5"},
+                {"No", "2"},
+                {"So so", "3"}
             };
             case 1: return new String[][] {
-                {"Joke around", "4"},
-                {"Be serious", "2"},
-                {"Flirt", "5"}
+                {"Painting", "4"},
+                {"I have no hobby", "2"},
+                {"Study", "5"}
             };
             case 2: return new String[][] {
                 {"Compliment him", "5"},
@@ -68,7 +68,6 @@ public class EasyDatingStrategy implements DatingStrategy {
 
     @Override
     public String getChallengeDescription() {
-        return "Alex challenges you to a 3-point shootout! " +
-            "He wants to see if you can keep up with him!";
+        return "Alex challenges you to pick cupcakes, pick carefully! ";
     }
 }
